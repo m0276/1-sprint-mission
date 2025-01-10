@@ -1,7 +1,5 @@
 package com.sprint.mission.service.jcf;
 
-import com.sprint.mission.discodeit.entity.Channel;
-import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.service.EntityService;
 
@@ -10,6 +8,7 @@ import java.util.*;
 
 public class JCFEntityServiceUser implements EntityService{
     private static final JCFEntityServiceUser INSTANCE = new JCFEntityServiceUser();
+    private static boolean dependency = true;
     private JCFEntityServiceUser() {}
 
     public static JCFEntityServiceUser getInstance() {
@@ -37,25 +36,24 @@ public class JCFEntityServiceUser implements EntityService{
         }
     }
 
-    public List<User> getUsers() {
-        return users;
-    }
-
     @Override
     public void showInfo(UUID id){
         SimpleDateFormat format = new SimpleDateFormat("yyyy년 MM월 dd일 hh:mm:ss");
 
-        boolean checkActiveUser = true;
-        User wantShowUser = null;
-        for (User user : users) {
-            if(user.getId().equals(id)){
-                wantShowUser = user;
-                checkActiveUser = false;
-                break;
-            }
+        boolean checkActiveUser = checkDependency(id);
+
+
+        if(checkActiveUser) {
+            System.out.println("존재하지 않는 유저입니다");
         }
-        if(checkActiveUser) System.out.println("존재하지 않는 유저입니다");
         else{
+            User wantShowUser = null;
+            for (User user : users) {
+                if(user.getId().equals(id)){
+                    wantShowUser = user;
+                    break;
+                }
+            }
             System.out.println("name = " + wantShowUser.getName());
             System.out.println("create date = " + format.format(wantShowUser.getCreatedAt()));
             System.out.println("last update date = " + format.format(wantShowUser.getUpdatedAt()));
@@ -63,13 +61,31 @@ public class JCFEntityServiceUser implements EntityService{
 
     }
 
+    @Override
+    public boolean checkDependency(UUID id) {
+        for(User user : users){
+            if(user.getId().equals(id)) {
+                dependency = false;
+                break;
+            }
+        }
+        return dependency;
+    }
+
     public String getUserName(UUID id){
         for(User user : users){
             if(user.getId().equals(id)){
+                dependency = false;
                 return user.getName();
             }
         }
 
-        return "Undefined";
+        dependency = true;
+        return "없는 계정입니다";
     }
+
+    boolean getDependency(){
+        return dependency;
+    }
+
 }

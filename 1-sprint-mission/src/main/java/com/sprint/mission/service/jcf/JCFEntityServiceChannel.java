@@ -1,7 +1,6 @@
 package com.sprint.mission.service.jcf;
 
 import com.sprint.mission.discodeit.entity.Channel;
-import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.service.EntityService;
 
 import java.text.SimpleDateFormat;
@@ -12,6 +11,7 @@ import java.util.UUID;
 
 public class JCFEntityServiceChannel implements EntityService{
     private static final JCFEntityServiceChannel INSTANCE = new JCFEntityServiceChannel();
+    private static boolean dependency = true;
     private JCFEntityServiceChannel(){}
 
     List<Channel> channels = new ArrayList<>();
@@ -74,21 +74,46 @@ public class JCFEntityServiceChannel implements EntityService{
     public void showInfo(UUID channelId){
         SimpleDateFormat format = new SimpleDateFormat("yyyy년 MM월 dd일 hh:mm:ss");
 
-        boolean checkActiveChannel = true;
+        boolean checkActiveChannel = checkDependency(channelId);
         Channel wantShowChannel = null;
-        for (Channel channel : channels) {
-            if(channel.getChannelId().equals(channelId)){
-                wantShowChannel = channel;
-                checkActiveChannel = false;
-                break;
-            }
+
+        if(checkActiveChannel) {
+            System.out.println("존재하지 않는 유저입니다");
         }
-        if(checkActiveChannel) System.out.println("존재하지 않는 채널입니다");
         else{
+            for (Channel channel : channels) {
+                if(channel.getChannelId().equals(channelId)){
+                    wantShowChannel = channel;
+                    dependency = false;
+                    break;
+                }
+            }
             System.out.println("name = " + wantShowChannel.getName());
             System.out.println("create date = " + format.format(wantShowChannel.getCreatedAt()));
             System.out.println("last update date = " + format.format(wantShowChannel.getUpdatedAt()));
             System.out.println(wantShowChannel.getUserName());
         }
+    }
+
+    @Override
+    public boolean checkDependency(UUID id) {
+        JCFEntityServiceUser user = JCFEntityServiceUser.getInstance();
+        if(user.getDependency()){
+            dependency = true;
+        }
+        else{
+            for(Channel channel : channels){
+                if(channel.getChannelId().equals(id)){
+                    dependency = false;
+                    break;
+                }
+            }
+        }
+
+        return dependency;
+    }
+
+    boolean getDependency(){
+        return dependency;
     }
 }
