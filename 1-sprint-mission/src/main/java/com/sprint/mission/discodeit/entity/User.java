@@ -4,16 +4,16 @@ import java.util.*;
 import java.util.UUID;
 
 public class User{
-    private UUID id;
-    private String name;
-    private long createdAt;
-    private long updatedAt;
+    private UUID id = UUID.randomUUID();
+    private String name = "Undefined";
+    private final long createdAt = System.currentTimeMillis();
+    private long updatedAt = System.currentTimeMillis();
 
     public UUID getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(UUID id){
         this.id = id;
     }
 
@@ -29,9 +29,6 @@ public class User{
         return createdAt;
     }
 
-    public void setCreatedAt(long createdAt) {
-        this.createdAt = createdAt;
-    }
 
     public long getUpdatedAt() {
         return updatedAt;

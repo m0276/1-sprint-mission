@@ -1,23 +1,27 @@
 package com.sprint.mission.discodeit.entity;
 
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class Message{
-    private UUID messageId;
+    private UUID messageId = UUID.randomUUID();
     private String text;
-    private long createdAt;
-    private long updatedAt;
+    private long updatedAt = System.currentTimeMillis();
     private UUID userId;
-    private UUID channelId;
     private String userName;
+    private UUID channelId;
+    private String channelName;
+
+
 
     public UUID getMessageId() {
         return messageId;
     }
 
-    public void setMessageId(UUID messageId) {
-        this.messageId = messageId;
+    public void setMessageId(UUID uuid) {
+        messageId = uuid;
     }
 
     public String getText() {
@@ -26,14 +30,6 @@ public class Message{
 
     public void setText(String text) {
         this.text = text;
-    }
-
-    public long getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(long createdAt) {
-        this.createdAt = createdAt;
     }
 
     public long getUpdatedAt() {
@@ -52,14 +48,6 @@ public class Message{
         this.userId = userId;
     }
 
-    public UUID getChannelId() {
-        return channelId;
-    }
-
-    public void setChannelId(UUID channelId) {
-        this.channelId = channelId;
-    }
-
     public String getUserName() {
         return userName;
     }
@@ -68,10 +56,19 @@ public class Message{
         this.userName = userName;
     }
 
-    @Override
-    public String toString() {
-        SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd hh:mm:ss");
-        return text + " (" + userName + ") " + format.format(updatedAt);
+    public UUID getChannelId() {
+        return channelId;
     }
 
+    public void setChannelId(UUID channelId) {
+        this.channelId = channelId;
+    }
+
+    public String getChannelName() {
+        return channelName;
+    }
+
+    public void setChannelName(String channelName) {
+        this.channelName = channelName;
+    }
 }
