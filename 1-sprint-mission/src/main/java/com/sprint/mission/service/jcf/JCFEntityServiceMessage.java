@@ -2,17 +2,19 @@ package com.sprint.mission.service.jcf;
 
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.Message;
+import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.service.EntityService;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
 public class JCFEntityServiceMessage implements EntityService{
-    private static final JCFEntityServiceMessage INSTANCE = new JCFEntityServiceMessage();
+    private static JCFEntityServiceMessage INSTANCE = new JCFEntityServiceMessage();
     private JCFEntityServiceMessage(){}
-    private boolean dependency = true;
+
     public static JCFEntityServiceMessage getInstance() {
         return INSTANCE;
     }
@@ -69,29 +71,11 @@ public class JCFEntityServiceMessage implements EntityService{
     @Override
     public void showInfo(UUID messageId){
         SimpleDateFormat format = new SimpleDateFormat("yyyy년 MM월 dd일 hh:mm:ss");
-        boolean checkChannel = checkDependency(messageId);
 
-        if(checkChannel){
-            System.out.println("없는 채널입니다");
-        }
-        else{
-            for(Message message : messages){
-                if(message.getMessageId().equals(messageId)){
-                    System.out.println(message.getText() +" " + message.getUserName()
-                            + " " + format.format(message.getUpdatedAt()));
-                }
+        for(Message message : messages){
+            if(message.getMessageId().equals(messageId)){
+                System.out.println(message.getText() +" " + message.getUserName() + " " + format.format(message.getUpdatedAt()));
             }
-            System.out.println("없는 메세지입니다");
         }
-
-    }
-
-    @Override
-    public boolean checkDependency(UUID id) {
-        JCFEntityServiceChannel channel = JCFEntityServiceChannel.getInstance();
-        if(!channel.getDependency()){
-            dependency = false;
-        }
-        return dependency;
     }
 }
