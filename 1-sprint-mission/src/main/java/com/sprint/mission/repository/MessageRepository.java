@@ -73,7 +73,6 @@ public class MessageRepository{
         }
     }
 
-
     public void modifyChannelName(UUID channelId,String newChannelId) {
         for(Message message : messages){
             if(message.getChannelId().equals(channelId)){
