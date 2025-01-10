@@ -51,10 +51,10 @@ public class Main {
         UUID testUnknownUser = UUID.randomUUID();
         System.out.println(user.getUserName(testUnknownUser));
 
-//        UUID testUnknownChannel = UUID.randomUUID();
-//        channel.showInfo(testUnknownChannel);
-//
-//        UUID testUnknownMessage = UUID.randomUUID();
-//        message.showInfo(testUnknownMessage);
+        UUID testUnknownChannel = UUID.randomUUID();
+        channel.showInfo(testUnknownChannel);
+
+        UUID testUnknownMessage = UUID.randomUUID();
+        message.showInfo(testUnknownMessage);
     }
 }
