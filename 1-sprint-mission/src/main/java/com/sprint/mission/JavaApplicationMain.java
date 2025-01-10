@@ -32,5 +32,9 @@ public class JavaApplicationMain {
 
         System.out.println(" ");
         jcfEntityService.showInfoMessage(message1);
+
+        System.out.println(" ");
+        jcfEntityService.modifyMessage(message1,"Hello World Hello");
+        jcfEntityService.showInfoMessage(message1);
     }
 }

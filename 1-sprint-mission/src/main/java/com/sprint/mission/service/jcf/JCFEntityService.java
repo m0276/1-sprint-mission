@@ -163,10 +163,10 @@ public class JCFEntityService implements EntityService {
         if(messageRepository.checkMessageContains(message.getMessageId())){
             messageRepository.modifyMessage(message.getUserId(),message.getMessageId(),content);
             System.out.println("메세지 수정 성공!");
+            return;
         }
 
         System.out.println("메세지 수정에 실패하였습니다");
-
     }
 
     @Override
