@@ -1,16 +1,14 @@
-package com.sprint.mission.service.jcf;
+package com.sprint.mission.discodeit.service.jcf;
 
 
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.entity.User;
-import com.sprint.mission.repository.ChannelRepository;
-import com.sprint.mission.repository.MessageRepository;
-import com.sprint.mission.repository.UserRepository;
+import com.sprint.mission.discodeit.repository.ChannelRepository;
+import com.sprint.mission.discodeit.repository.MessageRepository;
+import com.sprint.mission.discodeit.repository.UserRepository;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 public class JCFEntityService implements EntityService {

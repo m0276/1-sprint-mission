@@ -3,9 +3,7 @@ package com.sprint.mission;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.entity.User;
-import com.sprint.mission.service.jcf.JCFEntityService;
-
-import java.util.UUID;
+import com.sprint.mission.discodeit.service.jcf.JCFEntityService;
 
 public class JavaApplicationMain {
     static JCFEntityService jcfEntityService = JCFEntityService.getInstance();

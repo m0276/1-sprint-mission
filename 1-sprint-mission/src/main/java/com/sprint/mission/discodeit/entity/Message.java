@@ -1,8 +1,5 @@
 package com.sprint.mission.discodeit.entity;
 
-import java.text.SimpleDateFormat;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 public class Message{

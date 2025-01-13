@@ -1,9 +1,7 @@
-package com.sprint.mission.repository;
+package com.sprint.mission.discodeit.repository;
 
 import com.sprint.mission.discodeit.entity.User;
-import com.sprint.mission.service.jcf.EntityService;
 
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class UserRepository {
