@@ -4,9 +4,8 @@ import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.entity.User;
 
 import java.io.IOException;
-import java.io.Serializable;
 
-public interface Interface {
+public interface FileInterface {
     public void showInfoUser(User user) throws IOException, ClassNotFoundException;
     public User saveUser(String nickName) throws IOException, ClassNotFoundException;
     public void deleteUser(User user) throws IOException, ClassNotFoundException;

@@ -8,15 +8,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class FileMessageRepository {
+public class FileMessageRepository implements FileMessageRepositoryInterface{
     private static final FileMessageRepository INSTANCE = new FileMessageRepository();
     private FileMessageRepository(){}
     public static FileMessageRepository getInstance() {
         return INSTANCE;
     }
-
-    //private static final List<Message> messages = new ArrayList<>();
-
 
     public Message createMessage(String text, UUID userId, String userName ,UUID channelId,String channelName) throws IOException, ClassNotFoundException {
         Message message = new Message();

@@ -7,7 +7,7 @@ import java.io.*;
 import java.util.*;
 
 
-public class FileChannelRepository {
+public class FileChannelRepository implements FileChannelRepositoryInterface {
     private static final FileChannelRepository INSTANCE = new FileChannelRepository();
     private FileChannelRepository(){}
 

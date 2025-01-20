@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class FileUserRepository {
+public class FileUserRepository implements FileUserRepositoryInterface {
     private static final FileUserRepository INSTANCE = new FileUserRepository();
     private FileUserRepository() {}
 
@@ -62,7 +62,7 @@ public class FileUserRepository {
         modifyUserOfFile(users);
     }
 
-    public void saveUser(User user) throws IOException, ClassNotFoundException {
+    private void saveUser(User user) throws IOException, ClassNotFoundException {
         List<User> users = getUserListFromFile();
         users.add(user);
 
@@ -76,7 +76,7 @@ public class FileUserRepository {
     }
 
 
-    public List<User> getUserListFromFile() throws IOException, ClassNotFoundException {
+    private List<User> getUserListFromFile() throws IOException, ClassNotFoundException {
         List<User> users = new ArrayList<>();
 
 

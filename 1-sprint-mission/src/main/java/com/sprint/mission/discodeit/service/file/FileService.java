@@ -9,9 +9,8 @@ import com.sprint.mission.discodeit.repository.file.FileUserRepository;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
-import java.util.List;
 
-public class FileService implements Serializable,Interface {
+public class FileService implements Serializable, FileInterface {
 
     private static final FileService INSTANCE = new FileService();
     private FileService(){}
@@ -37,7 +36,6 @@ public class FileService implements Serializable,Interface {
         FileMessageRepository.getInstance().modifyUserName(user.getId(),"Undefined");
     }
 
-    // modifyUser 문제 해결하기
     @Override
     public void modifyUser(User user, String newName) throws IOException, ClassNotFoundException {
         FileUserRepository.getInstance().modifyUser(user.getId(),newName);
