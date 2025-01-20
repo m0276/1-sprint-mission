@@ -4,17 +4,17 @@ package com.sprint.mission.discodeit.service.jcf;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.entity.User;
-import com.sprint.mission.discodeit.repository.ChannelRepository;
-import com.sprint.mission.discodeit.repository.MessageRepository;
-import com.sprint.mission.discodeit.repository.UserRepository;
+import com.sprint.mission.discodeit.repository.jcf.JCFChannelRepository;
+import com.sprint.mission.discodeit.repository.jcf.JCFMessageRepository;
+import com.sprint.mission.discodeit.repository.jcf.JCFUserRepository;
 
 import java.text.SimpleDateFormat;
 import java.util.UUID;
 
 public class JCFEntityService implements EntityService {
-    private static final UserRepository userRepository = UserRepository.getInstance();
-    private static final MessageRepository messageRepository = MessageRepository.getInstance();
-    private static final ChannelRepository channelRepository = ChannelRepository.getInstance();
+    private static final JCFUserRepository userRepository = JCFUserRepository.getInstance();
+    private static final JCFMessageRepository messageRepository = JCFMessageRepository.getInstance();
+    private static final JCFChannelRepository channelRepository = JCFChannelRepository.getInstance();
     private static final SimpleDateFormat format = new SimpleDateFormat("yyyy년 MM월 dd일 hh:mm:ss");
 
     private static final JCFEntityService INSTANCE = new JCFEntityService();

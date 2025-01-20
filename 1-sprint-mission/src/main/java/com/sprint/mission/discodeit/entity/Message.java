@@ -1,8 +1,10 @@
 package com.sprint.mission.discodeit.entity;
 
+import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.UUID;
 
-public class Message{
+public class Message implements Serializable {
     private UUID messageId = UUID.randomUUID();
     private String text;
     private long updatedAt = System.currentTimeMillis();
@@ -67,5 +69,16 @@ public class Message{
 
     public void setChannelName(String channelName) {
         this.channelName = channelName;
+    }
+
+    SimpleDateFormat format = new SimpleDateFormat("yyyy년 MM월 dd일 hh:mm:ss");
+    @Override
+    public String toString() {
+        return "Message\n" +
+                "messageId = " + messageId + '\n' +
+                "text = " + text + '\n' +
+                "channel = " + channelName + "\n" +
+                "name = " + userName + '\n' +
+                "updatedAt = " + format.format(updatedAt);
     }
 }

@@ -1,4 +1,4 @@
-package com.sprint.mission.discodeit.repository;
+package com.sprint.mission.discodeit.repository.jcf;
 
 import com.sprint.mission.discodeit.entity.Message;
 
@@ -6,10 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class MessageRepository{
-    private static final MessageRepository INSTANCE = new MessageRepository();
-    private MessageRepository(){}
-    public static MessageRepository getInstance() {
+public class JCFMessageRepository {
+    private static final JCFMessageRepository INSTANCE = new JCFMessageRepository();
+    private JCFMessageRepository(){}
+    public static JCFMessageRepository getInstance() {
         return INSTANCE;
     }
 
@@ -79,10 +79,6 @@ public class MessageRepository{
     }
 
     public void deletedChannelMessage(UUID channelId){
-        for(Message message : messages){
-            if(message.getChannelId().equals(channelId)){
-                messages.remove(message);
-            }
-        }
+        messages.removeIf(message -> message.getChannelId().equals(channelId));
     }
 }
