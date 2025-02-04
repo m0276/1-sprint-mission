@@ -5,23 +5,35 @@ import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.repository.file.FileChannelRepository;
 import com.sprint.mission.discodeit.repository.file.FileMessageRepository;
 import com.sprint.mission.discodeit.repository.file.FileUserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 
+@Service
 public class BasicChannelService implements ChannelService {
-    private static final BasicChannelService INSTANCE = new BasicChannelService();
-    private final FileUserRepository userRepository = FileUserRepository.getInstance();
-    private final FileChannelRepository channelRepository = FileChannelRepository.getInstance();
-    private final FileMessageRepository messageRepository = FileMessageRepository.getInstance();
+//    private static final BasicChannelService INSTANCE = new BasicChannelService();
+//    private final FileUserRepository userRepository = FileUserRepository.getInstance();
+//    private final FileChannelRepository channelRepository = FileChannelRepository.getInstance();
+//    private final FileMessageRepository messageRepository = FileMessageRepository.getInstance();
+//
+//    private BasicChannelService(){}
+//
+//    public static BasicChannelService getInstance() {
+//        return INSTANCE;
+//    }
+    private final FileChannelRepository channelRepository;
+    private final FileUserRepository userRepository;
+    private final FileMessageRepository messageRepository;
 
-    private BasicChannelService(){}
-
-    public static BasicChannelService getInstance() {
-        return INSTANCE;
+    @Autowired
+    public BasicChannelService(FileChannelRepository channelRepository, FileUserRepository userRepository, FileMessageRepository messageRepository) {
+        this.channelRepository = channelRepository;
+        this.userRepository = userRepository;
+        this.messageRepository = messageRepository;
     }
-
 
     @Override
     public void showInfoChannel(Channel channel) throws IOException, ClassNotFoundException {

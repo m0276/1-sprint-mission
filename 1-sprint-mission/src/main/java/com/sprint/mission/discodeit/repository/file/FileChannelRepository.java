@@ -2,18 +2,19 @@ package com.sprint.mission.discodeit.repository.file;
 
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.User;
+import org.springframework.stereotype.Repository;
 
 import java.io.*;
 import java.util.*;
 
-
+@Repository
 public class FileChannelRepository implements FileChannelRepositoryInterface {
-    private static final FileChannelRepository INSTANCE = new FileChannelRepository();
-    private FileChannelRepository(){}
-
-    public static FileChannelRepository getInstance() {
-        return INSTANCE;
-    }
+//    private static final FileChannelRepository INSTANCE = new FileChannelRepository();
+//    private FileChannelRepository(){}
+//
+//    public static FileChannelRepository getInstance() {
+//        return INSTANCE;
+//    }
 
     public Channel createChannel(String channelName, User user) throws IOException, ClassNotFoundException {
         Channel channel = new Channel();

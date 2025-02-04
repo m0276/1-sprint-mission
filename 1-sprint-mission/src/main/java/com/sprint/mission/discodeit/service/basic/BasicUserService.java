@@ -4,21 +4,35 @@ import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.repository.file.FileChannelRepository;
 import com.sprint.mission.discodeit.repository.file.FileMessageRepository;
 import com.sprint.mission.discodeit.repository.file.FileUserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 
+@Service
 public class BasicUserService implements UserService{
-    private static final BasicUserService INSTANCE = new BasicUserService();
-    private final FileUserRepository userRepository = FileUserRepository.getInstance();
-    private final FileChannelRepository channelRepository = FileChannelRepository.getInstance();
-    private final FileMessageRepository messageRepository = FileMessageRepository.getInstance();
+//    private static final BasicUserService INSTANCE = new BasicUserService();
+//    private final FileUserRepository userRepository = FileUserRepository.getInstance();
+//    private final FileChannelRepository channelRepository = FileChannelRepository.getInstance();
+//    private final FileMessageRepository messageRepository = FileMessageRepository.getInstance();
+//
+//    private BasicUserService(){}
+//
+//    public static BasicUserService getInstance() {
+//        return INSTANCE;
+//    }
 
-    private BasicUserService(){}
+    private final FileChannelRepository channelRepository;
+    private final FileUserRepository userRepository;
+    private final FileMessageRepository messageRepository;
 
-    public static BasicUserService getInstance() {
-        return INSTANCE;
+    @Autowired
+    public BasicUserService(FileChannelRepository channelRepository, FileUserRepository userRepository, FileMessageRepository messageRepository) {
+        this.channelRepository = channelRepository;
+        this.userRepository = userRepository;
+        this.messageRepository = messageRepository;
     }
 
     @Override

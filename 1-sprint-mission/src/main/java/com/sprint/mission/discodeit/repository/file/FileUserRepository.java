@@ -1,19 +1,21 @@
 package com.sprint.mission.discodeit.repository.file;
 
 import com.sprint.mission.discodeit.entity.User;
+import org.springframework.stereotype.Repository;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@Repository
 public class FileUserRepository implements FileUserRepositoryInterface {
-    private static final FileUserRepository INSTANCE = new FileUserRepository();
-    private FileUserRepository() {}
-
-    public static FileUserRepository getInstance() {
-        return INSTANCE;
-    }
+//    private static final FileUserRepository INSTANCE = new FileUserRepository();
+//    private FileUserRepository() {}
+//
+//    public static FileUserRepository getInstance() {
+//        return INSTANCE;
+//    }
 
     public User createUser(String nickname) throws IOException, ClassNotFoundException {
         User user = new User();

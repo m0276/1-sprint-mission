@@ -6,19 +6,33 @@ import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.repository.file.FileChannelRepository;
 import com.sprint.mission.discodeit.repository.file.FileMessageRepository;
 import com.sprint.mission.discodeit.repository.file.FileUserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 
+@Service
 public class BasicMessageService implements MessageService {
-    private static final BasicMessageService INSTANCE = new BasicMessageService();
-    private final FileUserRepository userRepository = FileUserRepository.getInstance();
-    private final FileChannelRepository channelRepository = FileChannelRepository.getInstance();
-    private final FileMessageRepository messageRepository = FileMessageRepository.getInstance();
+//    private static final BasicMessageService INSTANCE = new BasicMessageService();
+//    private final FileUserRepository userRepository = FileUserRepository.getInstance();
+//    private final FileChannelRepository channelRepository = FileChannelRepository.getInstance();
+//    private final FileMessageRepository messageRepository = FileMessageRepository.getInstance();
+//
+//    private BasicMessageService(){}
+//
+//    public static BasicMessageService getInstance() {
+//        return INSTANCE;
+//    }
 
-    private BasicMessageService(){}
+    private final FileChannelRepository channelRepository;
+    private final FileUserRepository userRepository;
+    private final FileMessageRepository messageRepository;
 
-    public static BasicMessageService getInstance() {
-        return INSTANCE;
+    @Autowired
+    public BasicMessageService(FileChannelRepository channelRepository, FileUserRepository userRepository, FileMessageRepository messageRepository) {
+        this.channelRepository = channelRepository;
+        this.userRepository = userRepository;
+        this.messageRepository = messageRepository;
     }
 
     @Override
