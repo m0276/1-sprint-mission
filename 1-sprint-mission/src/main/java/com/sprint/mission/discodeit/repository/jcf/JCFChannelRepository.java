@@ -1,4 +1,4 @@
-package com.sprint.mission.discodeit.repository;
+package com.sprint.mission.discodeit.repository.jcf;
 
 import com.sprint.mission.discodeit.entity.Channel;
 
@@ -8,13 +8,13 @@ import java.util.List;
 import java.util.UUID;
 
 
-public class ChannelRepository{
-    private static final ChannelRepository INSTANCE = new ChannelRepository();
-    private ChannelRepository(){}
+public class JCFChannelRepository {
+    private static final JCFChannelRepository INSTANCE = new JCFChannelRepository();
+    private JCFChannelRepository(){}
 
     List<Channel> channels = new ArrayList<>();
 
-    public static ChannelRepository getInstance() {
+    public static JCFChannelRepository getInstance() {
         return INSTANCE;
     }
 
@@ -106,5 +106,9 @@ public class ChannelRepository{
         for(Channel channel : channels){
             channel.getUsers().remove(id);
         }
+    }
+
+    public List<Channel> getChannels(){
+        return channels;
     }
 }

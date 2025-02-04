@@ -1,14 +1,14 @@
-package com.sprint.mission.discodeit.repository;
+package com.sprint.mission.discodeit.repository.jcf;
 
 import com.sprint.mission.discodeit.entity.User;
 
 import java.util.*;
 
-public class UserRepository {
-    private static final UserRepository INSTANCE = new UserRepository();
-    private UserRepository() {}
+public class JCFUserRepository {
+    private static final JCFUserRepository INSTANCE = new JCFUserRepository();
+    private JCFUserRepository() {}
 
-    public static UserRepository getInstance() {
+    public static JCFUserRepository getInstance() {
         return INSTANCE;
     }
 
@@ -47,5 +47,9 @@ public class UserRepository {
                 break;
             }
         }
+    }
+
+    public List<User> getUsers() {
+        return users;
     }
 }
