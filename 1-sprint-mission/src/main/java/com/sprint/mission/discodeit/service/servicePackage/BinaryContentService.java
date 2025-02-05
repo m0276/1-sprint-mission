@@ -3,6 +3,7 @@ package com.sprint.mission.discodeit.service.servicePackage;
 import com.sprint.mission.discodeit.dto.MessageDto;
 import com.sprint.mission.discodeit.entity.BinaryContent;
 import com.sprint.mission.discodeit.repository.jcf.JCFBinaryContentRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,6 +11,11 @@ import java.util.List;
 @Service
 public class BinaryContentService {
     JCFBinaryContentRepository repository;
+
+    @Autowired
+    public BinaryContentService(JCFBinaryContentRepository repository) {
+        this.repository = repository;
+    }
 
     public void createMessageContent(MessageDto messageDto){
         repository.saveMessageContent(messageDto.getMessageId());

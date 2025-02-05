@@ -7,6 +7,7 @@ import com.sprint.mission.discodeit.repository.jcf.JCFChannelRepository;
 import com.sprint.mission.discodeit.repository.jcf.JCFMessageRepository;
 import com.sprint.mission.discodeit.repository.jcf.JCFUserRepository;
 import com.sprint.mission.discodeit.service.interfacePackage.ChannelServiceInterface;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
@@ -21,7 +22,13 @@ public class ChannelService implements ChannelServiceInterface {
     private JCFChannelRepository channelRepository;
     private ReadStatusService readStatusService;
     private static final SimpleDateFormat format = new SimpleDateFormat("yyyy년 MM월 dd일 hh:mm:ss");
-
+    @Autowired
+    public ChannelService(JCFUserRepository userRepository, JCFMessageRepository messageRepository, JCFChannelRepository channelRepository, ReadStatusService readStatusService) {
+        this.userRepository = userRepository;
+        this.messageRepository = messageRepository;
+        this.channelRepository = channelRepository;
+        this.readStatusService = readStatusService;
+    }
 
     @Override
     public Channel saveChannel(String nickName, User user , boolean checkPrivate) {

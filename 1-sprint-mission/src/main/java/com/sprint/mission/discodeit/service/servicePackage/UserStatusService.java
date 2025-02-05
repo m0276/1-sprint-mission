@@ -3,6 +3,7 @@ package com.sprint.mission.discodeit.service.servicePackage;
 import com.sprint.mission.discodeit.dto.UserDto;
 import com.sprint.mission.discodeit.entity.UserStatus;
 import com.sprint.mission.discodeit.repository.jcf.JCFUserStatusRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,6 +11,11 @@ import java.util.List;
 @Service
 public class UserStatusService {
     JCFUserStatusRepository repository;
+
+    @Autowired
+    public UserStatusService(JCFUserStatusRepository repository) {
+        this.repository = repository;
+    }
 
     public void create(UserDto userDto){
         repository.saveStatus(userDto.getId());

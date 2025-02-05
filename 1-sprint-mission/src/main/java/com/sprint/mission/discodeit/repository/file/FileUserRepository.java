@@ -3,7 +3,6 @@ package com.sprint.mission.discodeit.repository.file;
 import com.sprint.mission.discodeit.dto.UserDto;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.repository.file.interfacepac.FileUserRepositoryInterface;
-import com.sprint.mission.discodeit.service.basic.BasicChannelService;
 import org.springframework.stereotype.Repository;
 
 import java.io.*;
@@ -104,7 +103,8 @@ public class FileUserRepository {
         return null;
     }
 
-    public void findAll(){
+    public void findAll() throws IOException, ClassNotFoundException {
+        List<User> users = getUserListFromFile();
         for(User user : users){
             UserDto userDto = new UserDto();
             userDto.setId(user.getId());

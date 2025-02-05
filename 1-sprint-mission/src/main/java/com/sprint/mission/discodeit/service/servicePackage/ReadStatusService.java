@@ -4,6 +4,7 @@ import com.sprint.mission.discodeit.dto.ChannelDto;
 import com.sprint.mission.discodeit.entity.ReadStatus;
 import com.sprint.mission.discodeit.repository.jcf.JCFChannelRepository;
 import com.sprint.mission.discodeit.repository.jcf.JCFReadStatusRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,6 +15,11 @@ public class ReadStatusService {
 
     JCFReadStatusRepository repository;
     JCFChannelRepository channelRepository;
+
+    @Autowired
+    public ReadStatusService(JCFReadStatusRepository repository) {
+        this.repository = repository;
+    }
 
     public void create(ChannelDto dto){
         if(repository.findStatus(dto.getChannelId()) != null){
