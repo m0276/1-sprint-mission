@@ -1,5 +1,6 @@
 package com.sprint.mission.discodeit.repository.jcf;
 
+import com.sprint.mission.discodeit.dto.UserDto;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.entity.UserStatus;
 import com.sprint.mission.discodeit.repository.file.interfacepac.FileUserStatusRepositoryInterface;
@@ -49,7 +50,7 @@ public class JCFUserStatusRepository{
         }
     }
 
-    public boolean find(User user) {
+    public boolean find(UserDto user) {
         for(UserStatus status : statuses){
             if(status.getId().equals(user.getId())){
                 return status.isUserOnOff();
@@ -57,5 +58,19 @@ public class JCFUserStatusRepository{
         }
 
         return false;
+    }
+
+    public UserStatus findByUserId(UserDto user){
+        for(UserStatus status : statuses){
+            if(status.getId().equals(user.getId())){
+                return status;
+            }
+        }
+
+        return null;
+    }
+
+    public List<UserStatus> findAll(){
+        return statuses;
     }
 }

@@ -3,6 +3,7 @@ package com.sprint.mission.discodeit.repository.file;
 import com.sprint.mission.discodeit.dto.UserDto;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.repository.file.interfacepac.FileUserRepositoryInterface;
+import com.sprint.mission.discodeit.service.basic.BasicChannelService;
 import org.springframework.stereotype.Repository;
 
 import java.io.*;
@@ -12,7 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Repository
-public class FileUserRepository implements FileUserRepositoryInterface {
+public class FileUserRepository {
 //    private static final FileUserRepository INSTANCE = new FileUserRepository();
 //    private FileUserRepository() {}
 //
@@ -20,21 +21,42 @@ public class FileUserRepository implements FileUserRepositoryInterface {
 //        return INSTANCE;
 //    }
     private FileUserStatusRepository fileUserStatusRepository;
-
-    public User createUser(String nickname) throws IOException, ClassNotFoundException {
+    private FileBinaryContentRepository binaryContentRepository;
+    private FileUserStatusRepository statusRepository;
+    public User createUser(UserDto userDto) throws IOException, ClassNotFoundException {
         User user = new User();
-        user.setName(nickname);
-        if(checkUserId(user.getId())){
-            while(checkUserId(user.getId())){
-                user.setId(UUID.randomUUID());
+        List<User> users = getUserListFromFile();
+        for(User u : users){
+            if(u.getName().equals(user.getName())){
+                return null;
             }
         }
+        user.setName(userDto.getUserName());
+        user.setPassword(userDto.getPassword());
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+        if(!userDto.getEmail().matches(emailRegex)) return null;
+        user.setEmail(userDto.getEmail());
+        for(User u : users){
+            if(u.getId().equals(user.getId())){
+                while(!u.getId().equals(user.getId())){
+                    user.setId(UUID.randomUUID());
+                }
+            }
+        }
+
         saveUser(user);
+        if(userDto.isContainContent()){
+            binaryContentRepository.saveUserContent(user.getId(), Instant.now());
+        }
         return user;
     }
 
-    public void modifyUser(UUID id, String newNickname) throws IOException, ClassNotFoundException {
+    public boolean modifyUser(UUID id, String newNickname) throws IOException, ClassNotFoundException {
         List<User> users = getUserListFromFile();
+        for(User userName : users){
+            if(userName.getName().equals(newNickname)) return false;
+        }
+
         for (User user : users) {
             if (user.getId().equals(id)) {
                 user.setName(newNickname);
@@ -44,6 +66,7 @@ public class FileUserRepository implements FileUserRepositoryInterface {
         }
 
         modifyUserOfFile(users);
+        return true;
     }
 
     public boolean checkUserId(UUID id) throws IOException, ClassNotFoundException {
@@ -62,10 +85,31 @@ public class FileUserRepository implements FileUserRepositoryInterface {
         for(User user : users){
             if(user.getId().equals(id)){
                 users.remove(user);
+                binaryContentRepository.deleteUser(id);
                 break;
             }
         }
         modifyUserOfFile(users);
+    }
+
+    public User find(UserDto userDto) throws IOException, ClassNotFoundException {
+        List<User> users = getUserListFromFile();
+        for(User user : users){
+            if(user.getName().equals(userDto.getUserName()) && user.getPassword().equals(userDto.getPassword())){
+                System.out.println(user + "status : " + statusRepository.find(userDto));
+                return user;
+            }
+        }
+
+        return null;
+    }
+
+    public void findAll(){
+        for(User user : users){
+            UserDto userDto = new UserDto();
+            userDto.setId(user.getId());
+            System.out.println(user + "status : " + statusRepository.find(userDto));
+        }
     }
 
     private void saveUser(User user) throws IOException, ClassNotFoundException {

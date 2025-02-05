@@ -15,4 +15,15 @@ public class BinaryContent {
     //private boolean contain;
 
 
+    @Override
+    public String toString() {
+        String print = "";
+        print = "BinaryContent{";
+        if(userId != null) print += "userId=" + userId;
+
+        if(messageId != null) print = ", createdAt=" + createdAt;
+        print += '}';
+
+        return print;
+    }
 }

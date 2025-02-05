@@ -1,5 +1,6 @@
 package com.sprint.mission.discodeit.service.basic;
 
+import com.sprint.mission.discodeit.dto.UserDto;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.repository.file.FileChannelRepository;
 import com.sprint.mission.discodeit.repository.file.FileMessageRepository;
@@ -43,7 +44,9 @@ public class BasicUserService implements UserService{
 
     @Override
     public User saveUser() throws IOException, ClassNotFoundException{
-        return userRepository.createUser("UnNamed");
+        UserDto userDto = new UserDto();
+        userDto.setUserName("UnNamed");
+        return userRepository.createUser(userDto);
     }
 
     @Override

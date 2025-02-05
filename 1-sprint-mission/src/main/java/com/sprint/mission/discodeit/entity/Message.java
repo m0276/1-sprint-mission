@@ -18,6 +18,7 @@ public class Message implements Serializable {
     private String userName;
     private UUID channelId;
     private String channelName;
+    private int contents;
 
 
 

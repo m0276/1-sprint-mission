@@ -1,5 +1,6 @@
 package com.sprint.mission.discodeit.service.basic;
 
+import com.sprint.mission.discodeit.dto.MessageDto;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.entity.User;
@@ -46,8 +47,15 @@ public class BasicMessageService implements MessageService {
 
     @Override
     public Message saveMessage(String content, User user, Channel channel) throws IOException, ClassNotFoundException {
-        readStatusRepository.setStatus(Instant.now(),Instant.now(),channelRepository.getChannel(channel).getUsers().keySet().stream().toList(),user.getId());
-        return messageRepository.createMessage(content, user.getId(), userRepository.getUser(user).getName(), channel.getChannelId(), channelRepository.getChannel(channel).getName());
+        readStatusRepository.createStatus(channel.getChannelId(),channelRepository.getChannel(channel).getUsers().keySet().stream().toList(),user.getId());
+        MessageDto dto = new MessageDto();
+        dto.setUserId(user.getId());
+        dto.setUserName( userRepository.getUser(user).getName());
+        dto.setChannelId(channel.getChannelId());
+        dto.setChannelName(channelRepository.getChannel(channel).getName());
+        dto.setText(content);
+
+        return messageRepository.createMessage(dto);
     }
 
     @Override
@@ -57,6 +65,10 @@ public class BasicMessageService implements MessageService {
 
     @Override
     public void modifyMessage(Message message, String content) throws IOException, ClassNotFoundException {
-        messageRepository.modifyMessage(message.getUserId(),message.getMessageId(),content);
+        MessageDto dto = new MessageDto();
+        dto.setUserId(message.getUserId());
+        dto.setMessageId(message.getMessageId());
+        dto.setText(content);
+        messageRepository.modifyMessage(dto);
     }
 }

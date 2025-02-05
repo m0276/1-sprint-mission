@@ -1,5 +1,6 @@
 package com.sprint.mission.discodeit.repository.file;
 
+import com.sprint.mission.discodeit.dto.UserDto;
 import com.sprint.mission.discodeit.entity.UserStatus;
 import com.sprint.mission.discodeit.repository.file.interfacepac.FileUserStatusRepositoryInterface;
 import org.springframework.stereotype.Repository;
@@ -12,43 +13,72 @@ import java.util.List;
 import java.util.UUID;
 
 @Repository
-public class FileUserStatusRepository implements FileUserStatusRepositoryInterface {
-    @Override
-    public void setUserStatus(UUID userId, Instant createdAt, Instant updatedAt) throws IOException, ClassNotFoundException {
+public class FileUserStatusRepository{
+    public void saveStatus(UUID uid) throws IOException, ClassNotFoundException {
+        List<UserStatus> statuses = getUserStatusListFromFile();
         UserStatus userStatus = new UserStatus();
-        userStatus.setId(userId);
-        userStatus.setCreatedAt(createdAt);
-        userStatus.setUpdatedAt(updatedAt);
+        userStatus.setId(uid);
+        userStatus.setCreatedAt(Instant.now());
+        userStatus.setUpdatedAt(Instant.now());
         userStatus.setUserOnOff(true);
 
         saveStatus(userStatus);
     }
 
-    @Override
-    public void update(UUID id,Instant updatedAt) throws IOException, ClassNotFoundException {
-        List<UserStatus> userStatuses = getUserStatusListFromFile();
-        for(UserStatus userStatus : userStatuses){
-            if(userStatus.getId().equals(id)){
-                userStatus.setUpdatedAt(updatedAt);
-                modifyUserStatusOfFile(userStatuses);
+    public void updateStatus(UUID uid) throws IOException, ClassNotFoundException {
+        List<UserStatus> statuses = getUserStatusListFromFile();
+
+        for(UserStatus userStatus : statuses){
+            if(userStatus.getId().equals(uid)){
+                userStatus.setUpdatedAt(Instant.now());
+                modifyUserStatusOfFile(statuses);
                 return;
             }
         }
     }
 
-    @Override
-    public void checkUserOnline(UUID userId) throws IOException, ClassNotFoundException {
-        List<UserStatus> userStatuses = getUserStatusListFromFile();
-        for(UserStatus userStatus : userStatuses){
-            if(userStatus.getId().equals(userId)){
+    public void delete(UUID uid) throws IOException, ClassNotFoundException {
+        List<UserStatus> statuses = getUserStatusListFromFile();
+        statuses.removeIf(status -> status.getId().equals(uid));
+        modifyUserStatusOfFile(statuses);
+    }
+
+    public void checkOnline(UUID uid) throws IOException, ClassNotFoundException {
+        List<UserStatus> statuses = getUserStatusListFromFile();
+        for(UserStatus userStatus : statuses){
+            if(userStatus.getId().equals(uid)){
                 if(userStatus.getUpdatedAt().plus(5, ChronoUnit.MINUTES).compareTo(Instant.now()) > 0){
                     userStatus.setUserOnOff(false);
-                    modifyUserStatusOfFile(userStatuses);
+                    modifyUserStatusOfFile(statuses);
                 }
-                return;
+            }
+        }
+    }
+
+    public boolean find(UserDto user) throws IOException, ClassNotFoundException {
+        List<UserStatus> statuses = getUserStatusListFromFile();
+        for(UserStatus status : statuses){
+            if(status.getId().equals(user.getId())){
+                return status.isUserOnOff();
             }
         }
 
+        return false;
+    }
+
+    public UserStatus findByUserId(UserDto user) throws IOException, ClassNotFoundException {
+        List<UserStatus> statuses = getUserStatusListFromFile();
+        for(UserStatus status : statuses){
+            if(status.getId().equals(user.getId())){
+                return status;
+            }
+        }
+
+        return null;
+    }
+
+    public List<UserStatus> findAll() throws IOException, ClassNotFoundException {
+        return getUserStatusListFromFile();
     }
 
     private void saveStatus(UserStatus readStatus) throws IOException, ClassNotFoundException {

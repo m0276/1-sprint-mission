@@ -1,9 +1,9 @@
-package com.sprint.mission.discodeit.service.jcf.interfacePac;
+package com.sprint.mission.discodeit.service.interfacePackage;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.entity.User;
 
-public interface JCFMessageServiceInterface {
+public interface MessageServiceInterface {
 
 
     public void showInfoMessage(Message message);

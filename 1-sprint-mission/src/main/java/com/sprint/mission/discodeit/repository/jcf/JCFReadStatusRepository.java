@@ -47,4 +47,31 @@ public class JCFReadStatusRepository {
 
         return false;
     }
+
+    public void findChannel(UUID channelId) {
+        for(ReadStatus readStatus : statuses){
+            if(readStatus.getChannelId().equals(channelId)){
+                System.out.println(readStatus.getCheck().keySet());
+            }
+        }
+    }
+
+    public ReadStatus findStatus(UUID channelId){
+        for(ReadStatus readStatus : statuses){
+            if(readStatus.getChannelId().equals(channelId)) return readStatus;
+        }
+
+
+        return null;
+    }
+
+    public List<UUID> findByUserId(UUID userId) {
+        List<UUID> list = new ArrayList<>();
+
+        for(ReadStatus readStatus : statuses){
+            if(readStatus.getCheck().containsKey(userId)) list.add(readStatus.getChannelId());
+        }
+
+        return list;
+    }
 }

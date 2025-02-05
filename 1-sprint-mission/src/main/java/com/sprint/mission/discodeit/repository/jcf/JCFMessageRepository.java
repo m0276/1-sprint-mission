@@ -1,5 +1,6 @@
 package com.sprint.mission.discodeit.repository.jcf;
 
+import com.sprint.mission.discodeit.dto.MessageDto;
 import com.sprint.mission.discodeit.entity.Message;
 import org.springframework.stereotype.Repository;
 
@@ -16,31 +17,43 @@ public class JCFMessageRepository {
 //        return INSTANCE;
 //    }
 
+    private JCFBinaryContentRepository contentRepository;
     private static final List<Message> messages = new ArrayList<>();
 
 
-    public Message createMessage(String text, UUID userId, String userName ,UUID channelId,String channelName) {
+    public Message createMessage(MessageDto messageDto) {
         Message message = new Message();
-        message.setText(text);
-        message.setUserId(userId);
-        message.setUserName(userName);
-        message.setChannelId(channelId);
-        message.setChannelName(channelName);
+        message.setMessageId(UUID.randomUUID());
+
+        if(checkMessageContains(message.getMessageId())){
+            while(!checkMessageContains(message.getMessageId())){
+                message.setMessageId(UUID.randomUUID());
+            }
+        }
+
+        message.setText(messageDto.getText());
+        message.setUserId(messageDto.getUserId());
+        message.setUserName(messageDto.getUserName());
+        message.setChannelId(messageDto.getChannelId());
+        message.setChannelName(messageDto.getChannelName());
+        message.setContents(messageDto.getHowManyContent());
+
         messages.add(message);
+        if(messageDto.isHaveContent()) contentRepository.saveMessageContent(message.getMessageId());
         return message;
     }
 
-    public void modifyMessage(UUID Userid, UUID messageId ,String text) {
+    public void modifyMessage(MessageDto dto) {
         for (Message message : messages) {
-            if (message.getUserId().equals(Userid) && message.getMessageId().equals(messageId)) {
-                message.setText(text);
+            if (message.getUserId().equals(dto.getUserId()) && message.getMessageId().equals(dto.getMessageId())) {
+                message.setText(dto.getText());
                 message.setUpdatedAt(Instant.now());
                 break;
             }
         }
     }
 
-    public List<Message> getMessagesOfChannel(UUID channelId) {
+    public List<Message> findAllByChannelId(UUID channelId) {
         return messages.stream()
                 .filter(x -> x.getChannelId().equals(channelId))
                 .toList();
@@ -50,6 +63,7 @@ public class JCFMessageRepository {
         for(Message message : messages){
             if(message.getMessageId().equals(messageId)){
                 messages.remove(message);
+                contentRepository.findMessageContent(messageId);
                 break;
             }
         }
@@ -83,5 +97,18 @@ public class JCFMessageRepository {
 
     public void deletedChannelMessage(UUID channelId){
         messages.removeIf(message -> message.getChannelId().equals(channelId));
+    }
+
+    public Instant currentMessageOfChannel(UUID channelId){
+        Instant time = Instant.MIN;
+        for(Message message : messages){
+            if(message.getChannelId().equals(channelId)){
+                if(time.compareTo(message.getUpdatedAt()) <= 0){
+                    time = message.getUpdatedAt();
+                }
+            }
+        }
+
+        return time;
     }
 }

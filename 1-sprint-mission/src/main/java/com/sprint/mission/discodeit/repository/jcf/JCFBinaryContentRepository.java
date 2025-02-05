@@ -36,4 +36,33 @@ public class JCFBinaryContentRepository{
     public void deleteUser(UUID id) {
         contents.removeIf(content -> content.getUserId().equals(id));
     }
+
+    public void deleteMessage(UUID id){
+        contents.removeIf(content -> content.getMessageId().equals(id));
+    }
+
+    public BinaryContent findMessageContent(UUID messageId) {
+        for(BinaryContent content : contents){
+            if(content.getMessageId().equals(messageId)){
+                return content;
+            }
+        }
+
+        return null;
+    }
+
+
+    public BinaryContent findUserContent(UUID userId){
+        for(BinaryContent content : contents){
+            if(content.getUserId().equals(userId)){
+                return content;
+            }
+        }
+
+        return null;
+    }
+
+    public List<BinaryContent> findAll(){
+        return contents;
+    }
 }

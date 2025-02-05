@@ -1,4 +1,4 @@
-package com.sprint.mission.discodeit.service.jcf;
+package com.sprint.mission.discodeit.service.servicePackage;
 
 import com.sprint.mission.discodeit.dto.ChannelDto;
 import com.sprint.mission.discodeit.entity.Channel;
@@ -6,18 +6,18 @@ import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.repository.jcf.JCFChannelRepository;
 import com.sprint.mission.discodeit.repository.jcf.JCFMessageRepository;
 import com.sprint.mission.discodeit.repository.jcf.JCFUserRepository;
-import com.sprint.mission.discodeit.service.jcf.interfacePac.JCFChannelServiceInterface;
+import com.sprint.mission.discodeit.service.interfacePackage.ChannelServiceInterface;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class JCFChannelService implements JCFChannelServiceInterface {
+public class ChannelService implements ChannelServiceInterface {
     private JCFUserRepository userRepository;
     private JCFMessageRepository messageRepository;
     private JCFChannelRepository channelRepository;
-    private JCFReadStatusService readStatusService;
+    private ReadStatusService readStatusService;
     private static final SimpleDateFormat format = new SimpleDateFormat("yyyy년 MM월 dd일 hh:mm:ss");
 
 
@@ -94,11 +94,22 @@ public class JCFChannelService implements JCFChannelServiceInterface {
     public void findAllByUserId(User user){
         ChannelDto channelDto = new ChannelDto();
         channelDto.setUserId(user.getId());
+        List<Channel> list = channelRepository.findAllByUserId(channelDto);
+        List<UUID> listPrivateChannelId = readStatusService.findAllByUserId(channelDto);//uuid
+        for(UUID uid : listPrivateChannelId){
+            ChannelDto dto = new ChannelDto();
+            dto.setChannelId(uid);
 
-        for(Channel channel : channelRepository.findAllByUserId(channelDto)){
+            list.add(channelRepository.findChannel(dto));
+        }
+
+        for(Channel channel : list){
             System.out.println(channel + "\n");
             System.out.println("최종 활성화 일자 : " + messageRepository.currentMessageOfChannel(channel.getChannelId()));
         }
+
+
+
 
     }
 }

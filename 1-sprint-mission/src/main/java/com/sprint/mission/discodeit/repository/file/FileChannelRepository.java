@@ -1,5 +1,6 @@
 package com.sprint.mission.discodeit.repository.file;
 
+import com.sprint.mission.discodeit.dto.ChannelDto;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.repository.file.interfacepac.FileChannelRepositoryInterface;
@@ -10,7 +11,7 @@ import java.time.Instant;
 import java.util.*;
 
 @Repository
-public class FileChannelRepository implements FileChannelRepositoryInterface {
+public class FileChannelRepository{
 //    private static final FileChannelRepository INSTANCE = new FileChannelRepository();
 //    private FileChannelRepository(){}
 //
@@ -132,6 +133,83 @@ public class FileChannelRepository implements FileChannelRepositoryInterface {
         modifyChannelOfFile(channels);
     }
 
+    public Channel getChannel(Channel channel) throws IOException, ClassNotFoundException {
+        List<Channel> channels = getChannelListFromFile();
+
+        for(Channel chan : channels){
+            if(channel.getChannelId().equals(chan.getChannelId())){
+                return chan;
+            }
+        }
+
+        return null;
+    }
+
+    public List<Channel> findAllChannel() throws IOException, ClassNotFoundException {
+        return getChannelListFromFile();
+    }
+
+    public List<UUID> joinUserIdList(UUID channelId) throws IOException, ClassNotFoundException {
+        List<Channel> channels = getChannelListFromFile();
+        for(Channel channel : channels){
+            if(channel.getChannelId().equals(channelId)){
+                return channel.getUsers().keySet().stream().toList();
+            }
+        }
+
+        return new ArrayList<>();
+    }
+
+    public List<Channel> findAllByUserId(ChannelDto channelDto) throws IOException, ClassNotFoundException {
+        List<Channel> list = new ArrayList<>();
+        List<Channel> channels = getChannelListFromFile();
+
+        for(Channel channel : channels){
+            if(!channel.isCheckPrivateChannel()) list.add(channel);
+//            else{
+//                if(readStatusRepository.checkUser(channel.getChannelId(),channelDto.getUserId())){
+//                    list.add(channel);
+//                }
+//            }
+        }
+
+        return list;
+    }
+
+    public Channel findChannel(ChannelDto channelDto) throws IOException, ClassNotFoundException {
+        List<Channel> channels = getChannelListFromFile();
+        for(Channel channel : channels){
+            if(channel.getChannelId().equals(channelDto.getChannelId())){
+                return channel;
+            }
+        }
+
+        return null;
+    }
+
+    public void checkJoinChannel(UUID checkingUserId, String newName) throws IOException, ClassNotFoundException {
+        List<Channel> joinedChannel = new ArrayList<>();
+        List<Channel> channels = getChannelListFromFile();
+
+        for(Channel channel : channels){
+            if(channel.getUsers().containsKey(checkingUserId)){
+                joinedChannel.add(channel);
+            }
+        }
+
+        modifyChannelUser(joinedChannel, checkingUserId, newName);
+    }
+
+    private void modifyChannelUser(List<Channel> joinedChannel, UUID checkUserId, String newName) throws IOException, ClassNotFoundException {
+        List<Channel> channels = getChannelListFromFile();
+
+        for(Channel channel : channels){
+            if(joinedChannel.contains(channel)){
+                channel.getUsers().put(checkUserId,newName);
+            }
+        }
+    }
+
     private void setChannelListToFile(Channel channel) throws IOException, ClassNotFoundException {
         List<Channel> channels= getChannelListFromFile();
         channels.add(channel);
@@ -163,22 +241,6 @@ public class FileChannelRepository implements FileChannelRepositoryInterface {
         }
 
         return channels;
-    }
-
-    public Channel getChannel(Channel channel) throws IOException, ClassNotFoundException {
-        List<Channel> channels = getChannelListFromFile();
-
-        for(Channel chan : channels){
-            if(channel.getChannelId().equals(chan.getChannelId())){
-                return chan;
-            }
-        }
-
-        return null;
-    }
-
-    public List<Channel> getChannels() throws IOException, ClassNotFoundException {
-        return getChannelListFromFile();
     }
 
 }

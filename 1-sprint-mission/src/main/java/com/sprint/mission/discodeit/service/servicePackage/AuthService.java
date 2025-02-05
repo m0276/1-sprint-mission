@@ -1,13 +1,11 @@
-package com.sprint.mission.discodeit.service.basic;
+package com.sprint.mission.discodeit.service.servicePackage;
 
+import com.sprint.mission.discodeit.dto.UserDto;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.repository.jcf.JCFUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
@@ -22,13 +20,14 @@ public class AuthService {
 
 
     public User login(String userName, String password){
-        List<User> list = userRepository.getUsers();
-        for(User user : list){
-            if(user.getName().equals(userName) && user.getPassword().equals(password)){
-                return user;
-            }
-        }
+       UserDto userDto = new UserDto();
+       userDto.setUserName(userName);
+       userDto.setPassword(password);
 
-        throw new RuntimeException();
+       if(userRepository.find(userDto) == null){
+           throw new RuntimeException();
+       }
+
+        return userRepository.find(userDto);
     }
 }

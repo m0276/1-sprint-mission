@@ -1,4 +1,4 @@
-package com.sprint.mission.discodeit.service.jcf;
+package com.sprint.mission.discodeit.service.servicePackage;
 
 
 import com.sprint.mission.discodeit.dto.MessageDto;
@@ -6,21 +6,20 @@ import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.repository.jcf.JCFMessageRepository;
-import com.sprint.mission.discodeit.service.jcf.interfacePac.JCFMessageServiceInterface;
+import com.sprint.mission.discodeit.service.interfacePackage.MessageServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
-import java.util.UUID;
 
 @Service
-public class JCFMessageService implements JCFMessageServiceInterface {
+public class MessageService implements MessageServiceInterface {
 
     private JCFMessageRepository messageRepository;
     private static final SimpleDateFormat format = new SimpleDateFormat("yyyy년 MM월 dd일 hh:mm:ss");
 
     @Autowired
-    public JCFMessageService(JCFMessageRepository messageRepository) {
+    public MessageService(JCFMessageRepository messageRepository) {
         this.messageRepository = messageRepository;
     }
 

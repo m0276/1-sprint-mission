@@ -30,6 +30,7 @@ public class JCFUserRepository {
 
     public User createUser(UserDto userDto) {
         User user = new User();
+
         for(User u : users){
             if(u.getName().equals(user.getName())){
                 return null;
@@ -48,7 +49,6 @@ public class JCFUserRepository {
             }
         }
 
-        statusRepository.saveStatus(user.getId());
         users.add(user);
         if(userDto.isContainContent()){
             binaryContentRepository.saveUserContent(user.getId());
@@ -66,7 +66,6 @@ public class JCFUserRepository {
             if (user.getId().equals(id)) {
                 user.setName(newNickname);
                 user.setUpdatedAt(Instant.now());
-                statusRepository.updateStatus(id);
                 break;
             }
         }
@@ -88,25 +87,28 @@ public class JCFUserRepository {
         for(User user : users){
             if(user.getId().equals(id)){
                 users.remove(user);
-                statusRepository.delete(id);
                 binaryContentRepository.deleteUser(id);
                 break;
             }
         }
     }
 
-    public void find(UserDto userDto){
+    public User find(UserDto userDto){
         for(User user : users){
             if(user.getName().equals(userDto.getUserName()) && user.getPassword().equals(userDto.getPassword())){
-                System.out.println(user + "status : " + statusRepository.find(user));
+                System.out.println(user + "status : " + statusRepository.find(userDto));
+                return user;
             }
         }
 
+        return null;
     }
 
     public void findAll(){
         for(User user : users){
-            System.out.println(user + "status : " + statusRepository.find(user));
+            UserDto userDto = new UserDto();
+            userDto.setId(user.getId());
+            System.out.println(user + "status : " + statusRepository.find(userDto));
         }
     }
 

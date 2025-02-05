@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Repository
 public class JCFChannelRepository {
@@ -31,7 +32,6 @@ public class JCFChannelRepository {
         channel.setPrivateUsers(userId);
         channel.setCheckPrivateChannel(true);
         channels.add(channel);
-        readStatusRepository.createStatus(channel.getChannelId(),channel.getUsers().keySet().stream().toList(),userId);
 
         return channel;
     }
@@ -40,6 +40,12 @@ public class JCFChannelRepository {
         if(channelDto.isChannelPrivate()) return createPrivateChannel(channelDto.getChannelName(), channelDto.getUserId(), channelDto.getUserName());
 
         Channel channel = new Channel();
+        channel.setChannelId(UUID.randomUUID());
+        if(checkChannelContains(channel.getChannelId())){
+            while(!checkChannelContains(channel.getChannelId())){
+                channel.setChannelId(UUID.randomUUID());
+            }
+        }
         channel.setUpdatedAt(Instant.now());
         channel.setName(channelDto.getChannelName());
         channel.setUsers(channelDto.getUserId(),channelDto.getUserName());
@@ -55,7 +61,7 @@ public class JCFChannelRepository {
                 if(!channel.isCheckPrivateChannel()) channel.setUsers(channelDto.getUserId(), channelDto.getUserName());
                 else {
                     channel.setPrivateUsers(channelDto.getUserId());
-                    readStatusRepository.addUser(channelDto.getChannelId(),channelDto.getUserId());
+                    //readStatusRepository.addUser(channelDto.getChannelId(),channelDto.getUserId());
                 }
             }
         }
@@ -65,9 +71,9 @@ public class JCFChannelRepository {
         for(Channel channel : channels){
             if(channel.getChannelId().equals(deleteChannelId)){
                 channels.remove(channel);
-                if(channel.isCheckPrivateChannel()){
-                    readStatusRepository.deleteStatus(deleteChannelId);
-                }
+//                if(channel.isCheckPrivateChannel()){
+//                    readStatusRepository.deleteStatus(deleteChannelId);
+//                }
                 break;
             }
         }
@@ -134,6 +140,16 @@ public class JCFChannelRepository {
         return new ArrayList<>();
     }
 
+    public List<UUID> joinUserIdList(UUID channelId){
+        for(Channel channel : channels){
+            if(channel.getChannelId().equals(channelId)){
+                return channel.getUsers().keySet().stream().toList();
+            }
+        }
+
+        return new ArrayList<>();
+    }
+
     public void deleteUser(UUID id) {
         for(Channel channel : channels){
             channel.getUsers().remove(id);
@@ -148,13 +164,23 @@ public class JCFChannelRepository {
 
         for(Channel channel : channels){
             if(!channel.isCheckPrivateChannel()) list.add(channel);
-            else{
-                if(readStatusRepository.checkUser(channel.getChannelId(),channelDto.getUserId())){
-                    list.add(channel);
-                }
-            }
+//            else{
+//                if(readStatusRepository.checkUser(channel.getChannelId(),channelDto.getUserId())){
+//                    list.add(channel);
+//                }
+//            }
         }
 
         return list;
+    }
+
+    public Channel findChannel(ChannelDto channelDto){
+        for(Channel channel : channels){
+            if(channel.getChannelId().equals(channelDto.getChannelId())){
+                return channel;
+            }
+        }
+
+        return null;
     }
 }

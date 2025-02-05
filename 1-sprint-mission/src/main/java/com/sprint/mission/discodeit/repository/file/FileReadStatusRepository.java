@@ -11,38 +11,78 @@ import java.util.List;
 import java.util.UUID;
 
 @Repository
-public class FileReadStatusRepository implements FileReadStatusRepositoryInterface {
+public class FileReadStatusRepository {
 
-    @Override
-    public void setStatus(Instant createdAt, Instant updatedAt, List<UUID> list, UUID userId) throws IOException, ClassNotFoundException {
+    public void createStatus(UUID channelId, List<UUID> userList, UUID readUserId) throws IOException, ClassNotFoundException {
         ReadStatus readStatus = new ReadStatus();
-        UUID statusId = UUID.randomUUID();
-        if(checkReadStatusId(statusId)){
-            while(!checkReadStatusId(statusId)){
-                statusId = UUID.randomUUID();
-            }
-        }
+        readStatus.setChannelId(channelId);
+        readStatus.setUsers(userList, readUserId);
+        readStatus.setCreatedAt(Instant.now());
 
-        readStatus.setFirstStatus(statusId,createdAt,updatedAt,list, userId);
         saveStatus(readStatus);
     }
 
-    @Override
-    public void update(UUID id ,Instant updatedAt) throws IOException, ClassNotFoundException {
-        List<ReadStatus> readStatuses = getReadStatusListFromFile();
-
-        for(ReadStatus readStatus : readStatuses){
-            if(readStatus.getStatusId().equals(id)){
-                readStatus.setUpdatedAt(updatedAt);
-                modifyReadStatusOfFile(readStatuses);
-                return;
+    public void addUser(UUID channelId, UUID userId) throws IOException, ClassNotFoundException {
+        List<ReadStatus> statuses = getReadStatusListFromFile();
+        for(ReadStatus readStatus : statuses){
+            if(readStatus.getChannelId().equals(channelId)){
+                readStatus.getCheck().put(userId,true);
             }
         }
+        modifyReadStatusOfFile(statuses);
+    }
+
+    public void deleteStatus(UUID deleteChannelId) throws IOException, ClassNotFoundException {
+        List<ReadStatus> statuses = getReadStatusListFromFile();
+        statuses.removeIf(status -> status.getChannelId().equals(deleteChannelId));
+        modifyReadStatusOfFile(statuses);
 
     }
 
-    @Override
-    public List<UUID> setUserForRead(List<UUID> list){
+    public void deleteUser(UUID id) throws IOException, ClassNotFoundException {
+        List<ReadStatus> statuses = getReadStatusListFromFile();
+        for(ReadStatus readStatus : statuses){
+            readStatus.getCheck().remove(id);
+        }
+        modifyReadStatusOfFile(statuses);
+    }
+
+    public boolean checkUser(UUID channelId ,UUID id) throws IOException, ClassNotFoundException {
+        List<ReadStatus> statuses = getReadStatusListFromFile();
+        for(ReadStatus readStatus : statuses){
+            if(readStatus.getChannelId().equals(channelId) && readStatus.getCheck().containsKey(id)) return true;
+        }
+
+        return false;
+    }
+
+    public void findChannel(UUID channelId) throws IOException, ClassNotFoundException {
+        List<ReadStatus> statuses = getReadStatusListFromFile();
+        for(ReadStatus readStatus : statuses){
+            if(readStatus.getChannelId().equals(channelId)){
+                System.out.println(readStatus.getCheck().keySet());
+            }
+        }
+    }
+
+    public ReadStatus findStatus(UUID channelId) throws IOException, ClassNotFoundException {
+        List<ReadStatus> statuses = getReadStatusListFromFile();
+        for(ReadStatus readStatus : statuses){
+            if(readStatus.getChannelId().equals(channelId)) return readStatus;
+        }
+
+
+        return null;
+    }
+
+    public List<UUID> findByUserId(UUID userId) throws IOException, ClassNotFoundException {
+        List<ReadStatus> statuses = getReadStatusListFromFile();
+        List<UUID> list = new ArrayList<>();
+
+        for(ReadStatus readStatus : statuses){
+            if(readStatus.getCheck().containsKey(userId)) list.add(readStatus.getChannelId());
+        }
+
         return list;
     }
 

@@ -9,27 +9,64 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class FileBinaryContentRepository implements FileBinaryContentRepositoryInterface {
-    @Override
+public class FileBinaryContentRepository{
     public void saveUserContent(UUID id, Instant createdAt) throws IOException, ClassNotFoundException {
         BinaryContent binaryContent = new BinaryContent();
         binaryContent.setUserId(id);
-        binaryContent.setCreatedAt(createdAt);
+        binaryContent.setCreatedAt(Instant.now());
+        binaryContent.setMessageId(null);
 
         saveContent(binaryContent);
     }
 
-    public void saveMessageContent(UUID messageId, Instant createdAt) throws IOException, ClassNotFoundException {
+    public void saveMessageContent(UUID messageId) throws IOException, ClassNotFoundException {
         BinaryContent binaryContent = new BinaryContent();
         binaryContent.setMessageId(messageId);
-        binaryContent.setCreatedAt(createdAt);
+        binaryContent.setCreatedAt(Instant.now());
+        binaryContent.setUserId(null);
+
 
         saveContent(binaryContent);
     }
 
-    @Override
-    public boolean containsFile(UUID id) {
-        return false;
+    public void deleteUser(UUID id) throws IOException, ClassNotFoundException {
+        List<BinaryContent> contents = getContentListFromFile();
+
+        contents.removeIf(content -> content.getUserId().equals(id));
+        modifyContentOfFile(contents);
+    }
+
+    public void deleteMessage(UUID id) throws IOException, ClassNotFoundException {
+        List<BinaryContent> contents = getContentListFromFile();
+        contents.removeIf(content -> content.getMessageId().equals(id));
+        modifyContentOfFile(contents);
+    }
+
+    public BinaryContent findMessageContent(UUID messageId) throws IOException, ClassNotFoundException {
+        List<BinaryContent> contents = getContentListFromFile();
+        for(BinaryContent content : contents){
+            if(content.getMessageId().equals(messageId)){
+                return content;
+            }
+        }
+
+        return null;
+    }
+
+
+    public BinaryContent findUserContent(UUID userId) throws IOException, ClassNotFoundException {
+        List<BinaryContent> contents = getContentListFromFile();
+        for(BinaryContent content : contents){
+            if(content.getUserId().equals(userId)){
+                return content;
+            }
+        }
+
+        return null;
+    }
+
+    public List<BinaryContent> findAll() throws IOException, ClassNotFoundException {
+        return getContentListFromFile();
     }
 
     private void saveContent(BinaryContent content) throws IOException, ClassNotFoundException {
