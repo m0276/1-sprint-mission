@@ -1,30 +1,37 @@
 package com.sprint.mission.discodeit.repository.file;
 
 import com.sprint.mission.discodeit.entity.Message;
-import com.sprint.mission.discodeit.entity.User;
+import com.sprint.mission.discodeit.repository.file.interfacepac.FileMessageRepositoryInterface;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.io.*;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 @Repository
-public class FileMessageRepository implements FileMessageRepositoryInterface{
+public class FileMessageRepository implements FileMessageRepositoryInterface {
 //    private static final FileMessageRepository INSTANCE = new FileMessageRepository();
 //    private FileMessageRepository(){}
 //    public static FileMessageRepository getInstance() {
 //        return INSTANCE;
 //    }
+//    FileReadStatusRepository fileReadStatusRepository;
+//
+//    @Autowired
+//    public FileMessageRepository(FileReadStatusRepository fileReadStatusRepository) {
+//        this.fileReadStatusRepository = fileReadStatusRepository;
+//    }
 
-    public Message createMessage(String text, UUID userId, String userName ,UUID channelId,String channelName) throws IOException, ClassNotFoundException {
+    public Message createMessage(String text, UUID userId, String userName , UUID channelId, String channelName) throws IOException, ClassNotFoundException {
         Message message = new Message();
         message.setText(text);
         message.setUserId(userId);
         message.setUserName(userName);
         message.setChannelId(channelId);
         message.setChannelName(channelName);
-
         setMessageListToFile(message);
         return message;
     }
@@ -36,8 +43,8 @@ public class FileMessageRepository implements FileMessageRepositoryInterface{
             for (Message message : messagesList) {
                 if (message.getUserId().equals(Userid) && message.getMessageId().equals(messageId)) {
                     message.setText(text);
-                    message.setUpdatedAt(System.currentTimeMillis());
-                    ModifyListToFile(messagesList);
+                    message.setUpdatedAt(Instant.now());
+                    modifyListToFile(messagesList);
                     break;
                 }
             }
@@ -62,7 +69,7 @@ public class FileMessageRepository implements FileMessageRepositoryInterface{
                 }
             }
         }
-        ModifyListToFile(messagesList);
+        modifyListToFile(messagesList);
     }
 
     public boolean checkMessageContains(UUID id) throws IOException, ClassNotFoundException {
@@ -89,7 +96,7 @@ public class FileMessageRepository implements FileMessageRepositoryInterface{
             }
         }
 
-        ModifyListToFile(messagesList);
+        modifyListToFile(messagesList);
     }
 
     public void modifyChannelName(UUID channelId,String newChannelId) throws IOException, ClassNotFoundException {
@@ -105,7 +112,7 @@ public class FileMessageRepository implements FileMessageRepositoryInterface{
             }
         }
 
-        ModifyListToFile(messagesList);
+        modifyListToFile(messagesList);
     }
 
     public void deletedChannelMessage(UUID channelId) throws IOException, ClassNotFoundException {
@@ -116,7 +123,7 @@ public class FileMessageRepository implements FileMessageRepositoryInterface{
 
         messagesList.removeIf(message -> message.getChannelId().equals(channelId));
 
-        ModifyListToFile(messagesList);
+        modifyListToFile(messagesList);
     }
 
     private void setMessageListToFile(Message message) throws IOException, ClassNotFoundException {
@@ -130,7 +137,7 @@ public class FileMessageRepository implements FileMessageRepositoryInterface{
         catch (IOException ignored) {}
     }
 
-    private void ModifyListToFile(List<Message> messages) throws IOException {
+    private void modifyListToFile(List<Message> messages) throws IOException {
         try (
                 ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("Message.ser"))) {
                 out.writeObject(messages);

@@ -4,13 +4,14 @@ import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.repository.file.FileChannelRepository;
 import com.sprint.mission.discodeit.repository.file.FileMessageRepository;
 import com.sprint.mission.discodeit.repository.file.FileUserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.text.Format;
 import java.text.SimpleDateFormat;
-
+@RequiredArgsConstructor
 @Service
 public class BasicUserService implements UserService{
 //    private static final BasicUserService INSTANCE = new BasicUserService();
@@ -28,12 +29,12 @@ public class BasicUserService implements UserService{
     private final FileUserRepository userRepository;
     private final FileMessageRepository messageRepository;
 
-    @Autowired
-    public BasicUserService(FileChannelRepository channelRepository, FileUserRepository userRepository, FileMessageRepository messageRepository) {
-        this.channelRepository = channelRepository;
-        this.userRepository = userRepository;
-        this.messageRepository = messageRepository;
-    }
+//    @Autowired
+//    public BasicUserService(FileChannelRepository channelRepository, FileUserRepository userRepository, FileMessageRepository messageRepository) {
+//        this.channelRepository = channelRepository;
+//        this.userRepository = userRepository;
+//        this.messageRepository = messageRepository;
+//    }
 
     @Override
     public void showInfoUser(User user) throws IOException, ClassNotFoundException {

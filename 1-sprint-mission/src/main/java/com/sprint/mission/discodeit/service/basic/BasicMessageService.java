@@ -5,12 +5,16 @@ import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.repository.file.FileChannelRepository;
 import com.sprint.mission.discodeit.repository.file.FileMessageRepository;
+import com.sprint.mission.discodeit.repository.file.FileReadStatusRepository;
 import com.sprint.mission.discodeit.repository.file.FileUserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.time.Instant;
 
+@RequiredArgsConstructor
 @Service
 public class BasicMessageService implements MessageService {
 //    private static final BasicMessageService INSTANCE = new BasicMessageService();
@@ -27,13 +31,13 @@ public class BasicMessageService implements MessageService {
     private final FileChannelRepository channelRepository;
     private final FileUserRepository userRepository;
     private final FileMessageRepository messageRepository;
-
-    @Autowired
-    public BasicMessageService(FileChannelRepository channelRepository, FileUserRepository userRepository, FileMessageRepository messageRepository) {
-        this.channelRepository = channelRepository;
-        this.userRepository = userRepository;
-        this.messageRepository = messageRepository;
-    }
+    private final FileReadStatusRepository readStatusRepository;
+//    @Autowired
+//    public BasicMessageService(FileChannelRepository channelRepository, FileUserRepository userRepository, FileMessageRepository messageRepository) {
+//        this.channelRepository = channelRepository;
+//        this.userRepository = userRepository;
+//        this.messageRepository = messageRepository;
+//    }
 
     @Override
     public void showInfoMessage(Message message) throws IOException, ClassNotFoundException {
@@ -42,6 +46,7 @@ public class BasicMessageService implements MessageService {
 
     @Override
     public Message saveMessage(String content, User user, Channel channel) throws IOException, ClassNotFoundException {
+        readStatusRepository.setStatus(Instant.now(),Instant.now(),channelRepository.getChannel(channel).getUsers().keySet().stream().toList(),user.getId());
         return messageRepository.createMessage(content, user.getId(), userRepository.getUser(user).getName(), channel.getChannelId(), channelRepository.getChannel(channel).getName());
     }
 

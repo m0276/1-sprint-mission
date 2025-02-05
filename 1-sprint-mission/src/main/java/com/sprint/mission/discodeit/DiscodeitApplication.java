@@ -6,25 +6,26 @@ import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.service.basic.ChannelService;
 import com.sprint.mission.discodeit.service.basic.MessageService;
 import com.sprint.mission.discodeit.service.basic.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.io.IOException;
 
-
+@RequiredArgsConstructor
 @SpringBootApplication
 public class DiscodeitApplication {
 	static UserService userService;
 	static ChannelService channelService;
 	static MessageService messageService;
 
-	@Autowired
-	public DiscodeitApplication(UserService userService, ChannelService channelService, MessageService messageService) {
-		DiscodeitApplication.userService = userService;
-		DiscodeitApplication.channelService = channelService;
-		DiscodeitApplication.messageService = messageService;
-	}
+//	@Autowired
+//	public DiscodeitApplication(UserService userService, ChannelService channelService, MessageService messageService) {
+//		DiscodeitApplication.userService = userService;
+//		DiscodeitApplication.channelService = channelService;
+//		DiscodeitApplication.messageService = messageService;
+//	}
 
 	public static void main(String[] args) throws IOException, ClassNotFoundException {
 		SpringApplication.run(DiscodeitApplication.class, args);

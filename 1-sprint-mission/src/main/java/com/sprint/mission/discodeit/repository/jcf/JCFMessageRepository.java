@@ -1,17 +1,20 @@
 package com.sprint.mission.discodeit.repository.jcf;
 
 import com.sprint.mission.discodeit.entity.Message;
+import org.springframework.stereotype.Repository;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@Repository
 public class JCFMessageRepository {
-    private static final JCFMessageRepository INSTANCE = new JCFMessageRepository();
-    private JCFMessageRepository(){}
-    public static JCFMessageRepository getInstance() {
-        return INSTANCE;
-    }
+//    private static final JCFMessageRepository INSTANCE = new JCFMessageRepository();
+//    private JCFMessageRepository(){}
+//    public static JCFMessageRepository getInstance() {
+//        return INSTANCE;
+//    }
 
     private static final List<Message> messages = new ArrayList<>();
 
@@ -31,7 +34,7 @@ public class JCFMessageRepository {
         for (Message message : messages) {
             if (message.getUserId().equals(Userid) && message.getMessageId().equals(messageId)) {
                 message.setText(text);
-                message.setUpdatedAt(System.currentTimeMillis());
+                message.setUpdatedAt(Instant.now());
                 break;
             }
         }

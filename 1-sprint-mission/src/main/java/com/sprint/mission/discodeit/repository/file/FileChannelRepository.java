@@ -2,9 +2,11 @@ package com.sprint.mission.discodeit.repository.file;
 
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.User;
+import com.sprint.mission.discodeit.repository.file.interfacepac.FileChannelRepositoryInterface;
 import org.springframework.stereotype.Repository;
 
 import java.io.*;
+import java.time.Instant;
 import java.util.*;
 
 @Repository
@@ -102,7 +104,7 @@ public class FileChannelRepository implements FileChannelRepositoryInterface {
         for(Channel channel : channels){
             if(channel.getChannelId().equals(channelId)){
                 channel.setName(name);
-                channel.setUpdatedAt(System.currentTimeMillis());
+                channel.setUpdatedAt(Instant.now());
                 break;
             }
         }

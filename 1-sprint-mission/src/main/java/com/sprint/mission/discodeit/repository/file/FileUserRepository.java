@@ -1,9 +1,12 @@
 package com.sprint.mission.discodeit.repository.file;
 
+import com.sprint.mission.discodeit.dto.UserDto;
 import com.sprint.mission.discodeit.entity.User;
+import com.sprint.mission.discodeit.repository.file.interfacepac.FileUserRepositoryInterface;
 import org.springframework.stereotype.Repository;
 
 import java.io.*;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -16,6 +19,7 @@ public class FileUserRepository implements FileUserRepositoryInterface {
 //    public static FileUserRepository getInstance() {
 //        return INSTANCE;
 //    }
+    private FileUserStatusRepository fileUserStatusRepository;
 
     public User createUser(String nickname) throws IOException, ClassNotFoundException {
         User user = new User();
@@ -34,7 +38,7 @@ public class FileUserRepository implements FileUserRepositoryInterface {
         for (User user : users) {
             if (user.getId().equals(id)) {
                 user.setName(newNickname);
-                user.setUpdatedAt(System.currentTimeMillis());
+                user.setUpdatedAt(Instant.now());
                 break;
             }
         }
