@@ -3,23 +3,19 @@ package com.sprint.mission.discodeit.repository.file;
 import com.sprint.mission.discodeit.dto.ChannelDto;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.User;
-import com.sprint.mission.discodeit.repository.file.interfacepac.FileChannelRepositoryInterface;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.io.*;
 import java.time.Instant;
 import java.util.*;
 
-@Repository
-public class FileChannelRepository{
-//    private static final FileChannelRepository INSTANCE = new FileChannelRepository();
-//    private FileChannelRepository(){}
-//
-//    public static FileChannelRepository getInstance() {
-//        return INSTANCE;
-//    }
 
-    public Channel createChannel(String channelName, User user) throws IOException, ClassNotFoundException {
+@Repository
+public class FileChannelRepository {
+
+    public void createChannel(ChannelDto channelDto) throws IOException, ClassNotFoundException {
         Channel channel = new Channel();
 
         if(checkChannelContains(channel.getChannelId())){
@@ -28,15 +24,16 @@ public class FileChannelRepository{
             }
         }
 
-        channel.setName(channelName);
-        channel.setUsers(user.getId(),user.getName());
+        channel.setName(channelDto.getChannelName());
+        channel.setUsers(channelDto.getUserId(),channelDto.getUserName());
+        channel.setCheckPrivateChannel(channelDto.getChannelPrivate());
 
         setChannelListToFile(channel);
-        return channel;
     }
 
-    private boolean checkChannelContains(UUID channelId) throws IOException, ClassNotFoundException {
+    public boolean checkChannelContains(UUID channelId) throws IOException, ClassNotFoundException {
         List<Channel> channels = getChannelListFromFile();
+
         for(Channel channel : channels){
             if(channel.getChannelId().equals(channelId)){
                 return true;
@@ -46,11 +43,11 @@ public class FileChannelRepository{
         return false;
     }
 
-    public void joinChannel(UUID channelId, UUID userId, String userName) throws IOException, ClassNotFoundException {
+    public void joinChannel(ChannelDto channelDto) throws IOException, ClassNotFoundException {
         List<Channel> channels = getChannelListFromFile();
         for(Channel channel : channels){
-            if(channel.getChannelId().equals(channelId)){
-                channel.setUsers(userId,userName);
+            if(channel.getChannelId().equals(channelDto.getChannelId())){
+                channel.setUsers(channelDto.getUserId(), channelDto.getUserName());
                 break;
 
             }
@@ -106,6 +103,7 @@ public class FileChannelRepository{
             if(channel.getChannelId().equals(channelId)){
                 channel.setName(name);
                 channel.setUpdatedAt(Instant.now());
+                modifyChannelOfFile(channels);
                 break;
             }
         }
@@ -133,11 +131,11 @@ public class FileChannelRepository{
         modifyChannelOfFile(channels);
     }
 
-    public Channel getChannel(Channel channel) throws IOException, ClassNotFoundException {
+    public Channel getChannel(ChannelDto channel) throws IOException, ClassNotFoundException {
         List<Channel> channels = getChannelListFromFile();
 
         for(Channel chan : channels){
-            if(channel.getChannelId().equals(chan.getChannelId())){
+            if(channel.getChannelName().equals(chan.getName())){
                 return chan;
             }
         }
@@ -165,12 +163,12 @@ public class FileChannelRepository{
         List<Channel> channels = getChannelListFromFile();
 
         for(Channel channel : channels){
-            if(!channel.isCheckPrivateChannel()) list.add(channel);
-//            else{
-//                if(readStatusRepository.checkUser(channel.getChannelId(),channelDto.getUserId())){
-//                    list.add(channel);
-//                }
-//            }
+            if(!channel.getCheckPrivateChannel()) list.add(channel);
+            else{
+                if(channel.getPrivateUsers().contains(channelDto.getUserId())){
+                    list.add(channel);
+                }
+            }
         }
 
         return list;

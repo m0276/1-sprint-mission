@@ -3,13 +3,12 @@ package com.sprint.mission.discodeit.repository.jcf;
 import com.sprint.mission.discodeit.dto.UserDto;
 import com.sprint.mission.discodeit.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
 
 import java.time.Instant;
 import java.util.*;
 
 
-@Repository
+
 public class JCFUserRepository {
 //    private static final JCFUserRepository INSTANCE = new JCFUserRepository();
 //    private JCFUserRepository() {}
@@ -19,12 +18,6 @@ public class JCFUserRepository {
 //    }
     JCFUserStatusRepository statusRepository;
     JCFBinaryContentRepository binaryContentRepository;
-
-    @Autowired
-    public JCFUserRepository(JCFUserStatusRepository repository, JCFBinaryContentRepository binaryContentRepository) {
-        this.statusRepository = repository;
-        this.binaryContentRepository = binaryContentRepository;
-    }
 
     private final List<User> users = new ArrayList<>();
 
@@ -50,7 +43,7 @@ public class JCFUserRepository {
         }
 
         users.add(user);
-        if(userDto.isContainContent()){
+        if(userDto.getContainContent()){
             binaryContentRepository.saveUserContent(user.getId());
         }
 

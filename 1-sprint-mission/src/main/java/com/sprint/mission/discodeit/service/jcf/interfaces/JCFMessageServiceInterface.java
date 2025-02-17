@@ -1,4 +1,4 @@
-package com.sprint.mission.discodeit.service.jcf.interfacePac;
+package com.sprint.mission.discodeit.service.jcf.interfaces;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.entity.User;

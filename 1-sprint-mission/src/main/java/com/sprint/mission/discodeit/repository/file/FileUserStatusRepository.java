@@ -2,7 +2,6 @@ package com.sprint.mission.discodeit.repository.file;
 
 import com.sprint.mission.discodeit.dto.UserDto;
 import com.sprint.mission.discodeit.entity.UserStatus;
-import com.sprint.mission.discodeit.repository.file.interfacepac.FileUserStatusRepositoryInterface;
 import org.springframework.stereotype.Repository;
 
 import java.io.*;
@@ -10,12 +9,12 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Repository
-public class FileUserStatusRepository{
+public class FileUserStatusRepository {
     public void saveStatus(UUID uid) throws IOException, ClassNotFoundException {
-        List<UserStatus> statuses = getUserStatusListFromFile();
         UserStatus userStatus = new UserStatus();
         userStatus.setId(uid);
         userStatus.setCreatedAt(Instant.now());
@@ -25,12 +24,13 @@ public class FileUserStatusRepository{
         saveStatus(userStatus);
     }
 
-    public void updateStatus(UUID uid) throws IOException, ClassNotFoundException {
+    public void updateStatus(UserDto userDto) throws IOException, ClassNotFoundException {
         List<UserStatus> statuses = getUserStatusListFromFile();
 
         for(UserStatus userStatus : statuses){
-            if(userStatus.getId().equals(uid)){
+            if(userStatus.getId().equals(userDto.getId())){
                 userStatus.setUpdatedAt(Instant.now());
+                userStatus.setUserOnOff(!userStatus.isUserOnOff());
                 modifyUserStatusOfFile(statuses);
                 return;
             }
@@ -57,13 +57,17 @@ public class FileUserStatusRepository{
 
     public boolean find(UserDto user) throws IOException, ClassNotFoundException {
         List<UserStatus> statuses = getUserStatusListFromFile();
+        if(statuses.isEmpty()) {
+            return false;
+        }
+
         for(UserStatus status : statuses){
             if(status.getId().equals(user.getId())){
                 return status.isUserOnOff();
             }
         }
 
-        return false;
+        throw new IOException();
     }
 
     public UserStatus findByUserId(UserDto user) throws IOException, ClassNotFoundException {
@@ -86,7 +90,7 @@ public class FileUserStatusRepository{
         userStatuses.add(readStatus);
 
         try {
-            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("userStatus.ser"));
+            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("UserStatus.ser"));
             out.writeObject(userStatuses);
             out.close();
         }

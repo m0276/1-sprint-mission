@@ -2,7 +2,7 @@ package com.sprint.mission.discodeit.repository.file;
 
 import com.sprint.mission.discodeit.dto.MessageDto;
 import com.sprint.mission.discodeit.entity.Message;
-import com.sprint.mission.discodeit.repository.file.interfacepac.FileMessageRepositoryInterface;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -14,20 +14,14 @@ import java.util.UUID;
 
 @Repository
 public class FileMessageRepository {
-//    private static final FileMessageRepository INSTANCE = new FileMessageRepository();
-//    private FileMessageRepository(){}
-//    public static FileMessageRepository getInstance() {
-//        return INSTANCE;
-//    }
-//    FileReadStatusRepository fileReadStatusRepository;
-//
-//    @Autowired
-//    public FileMessageRepository(FileReadStatusRepository fileReadStatusRepository) {
-//        this.fileReadStatusRepository = fileReadStatusRepository;
-//    }
     FileBinaryContentRepository contentRepository;
 
-    public Message createMessage(MessageDto messageDto) throws IOException, ClassNotFoundException {
+    @Autowired
+    public FileMessageRepository(FileBinaryContentRepository contentRepository) {
+        this.contentRepository = contentRepository;
+    }
+
+    public void createMessage(MessageDto messageDto) throws IOException, ClassNotFoundException {
         Message message = new Message();
 
         if(checkMessageContains(message.getMessageId())){
@@ -41,11 +35,10 @@ public class FileMessageRepository {
         message.setUserName(messageDto.getUserName());
         message.setChannelId(messageDto.getChannelId());
         message.setChannelName(messageDto.getChannelName());
-        message.setContents(messageDto.getHowManyContent());
+        message.setIsContainContent(!messageDto.getContentUrl().isEmpty());
 
         setMessageListToFile(message);
-        if(messageDto.isHaveContent()) contentRepository.saveMessageContent(message.getMessageId());
-        return message;
+        if(messageDto.getHaveContent()) contentRepository.saveMessageContent(messageDto);
     }
 
     public void modifyMessage(MessageDto dto) throws IOException, ClassNotFoundException {
@@ -56,6 +49,7 @@ public class FileMessageRepository {
                 if (message.getUserId().equals(dto.getUserId()) && message.getMessageId().equals(dto.getMessageId())) {
                     message.setText(dto.getText());
                     message.setUpdatedAt(Instant.now());
+                    modifyListToFile(messagesList);
                     break;
                 }
             }
@@ -149,11 +143,13 @@ public class FileMessageRepository {
                 }
             }
         }
-
+        if(time == Instant.MIN){
+            return null;
+        }
         return time;
     }
 
-    public Message getMessage(Message message) throws IOException, ClassNotFoundException {
+    public Message getMessage(MessageDto message) throws IOException, ClassNotFoundException {
         List<Message> messageList = getMessageFromFile();
 
         for(Message message1 : messageList){
@@ -167,6 +163,18 @@ public class FileMessageRepository {
 
     public List<Message> getMessages() throws IOException, ClassNotFoundException {
         return getMessageFromFile();
+    }
+
+    public List<Message> getMessagesInChannel(MessageDto messageDto) throws IOException, ClassNotFoundException {
+        List<Message> messageList = getMessageFromFile();
+        List<Message> list = new ArrayList<>();
+
+        for(Message message1 : messageList){
+            if(message1.getChannelName().equals(messageDto.getChannelName())){
+                list.add(message1);
+            }
+        }
+        return list;
     }
 
 

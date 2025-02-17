@@ -1,20 +1,16 @@
 package com.sprint.mission.discodeit.repository.jcf;
 
 import com.sprint.mission.discodeit.dto.UserDto;
-import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.entity.UserStatus;
-import com.sprint.mission.discodeit.repository.file.interfacepac.FileUserStatusRepositoryInterface;
-import org.springframework.stereotype.Repository;
 
-import java.io.*;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@Repository
-public class JCFUserStatusRepository{
+
+public class JCFUserStatusRepository {
     private final List<UserStatus> statuses = new ArrayList<>();
 
     public void saveStatus(UUID uid){

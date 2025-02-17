@@ -2,17 +2,14 @@ package com.sprint.mission.discodeit.repository.jcf;
 
 import com.sprint.mission.discodeit.dto.ChannelDto;
 import com.sprint.mission.discodeit.entity.Channel;
-import org.springframework.stereotype.Repository;
 
-import java.awt.*;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
-@Repository
+
 public class JCFChannelRepository {
 //    private static final JCFChannelRepository INSTANCE = new JCFChannelRepository();
 //    private JCFChannelRepository(){}
@@ -37,7 +34,7 @@ public class JCFChannelRepository {
     }
 
     public Channel createChannel(ChannelDto channelDto){
-        if(channelDto.isChannelPrivate()) return createPrivateChannel(channelDto.getChannelName(), channelDto.getUserId(), channelDto.getUserName());
+        if(channelDto.getChannelPrivate()) return createPrivateChannel(channelDto.getChannelName(), channelDto.getUserId(), channelDto.getUserName());
 
         Channel channel = new Channel();
         channel.setChannelId(UUID.randomUUID());
@@ -58,7 +55,7 @@ public class JCFChannelRepository {
     public void joinChannel(ChannelDto channelDto){
         for(Channel channel : channels){
             if(channel.getChannelId().equals(channelDto.getChannelId())){
-                if(!channel.isCheckPrivateChannel()) channel.setUsers(channelDto.getUserId(), channelDto.getUserName());
+                if(!channel.getCheckPrivateChannel()) channel.setUsers(channelDto.getUserId(), channelDto.getUserName());
                 else {
                     channel.setPrivateUsers(channelDto.getUserId());
                     //readStatusRepository.addUser(channelDto.getChannelId(),channelDto.getUserId());
@@ -121,7 +118,7 @@ public class JCFChannelRepository {
     public boolean modifyChannel(UUID channelId, String name) {
         for(Channel channel : channels){
             if(channel.getChannelId().equals(channelId)){
-                if(channel.isCheckPrivateChannel()) return false;
+                if(channel.getCheckPrivateChannel()) return false;
                 channel.setName(name);
                 channel.setUpdatedAt(Instant.now());
                 return true;
@@ -153,7 +150,7 @@ public class JCFChannelRepository {
     public void deleteUser(UUID id) {
         for(Channel channel : channels){
             channel.getUsers().remove(id);
-            if(channel.isCheckPrivateChannel()){
+            if(channel.getCheckPrivateChannel()){
                 readStatusRepository.deleteUser(id);
             }
         }
@@ -163,7 +160,7 @@ public class JCFChannelRepository {
         List<Channel> list = new ArrayList<>();
 
         for(Channel channel : channels){
-            if(!channel.isCheckPrivateChannel()) list.add(channel);
+            if(!channel.getCheckPrivateChannel()) list.add(channel);
 //            else{
 //                if(readStatusRepository.checkUser(channel.getChannelId(),channelDto.getUserId())){
 //                    list.add(channel);
