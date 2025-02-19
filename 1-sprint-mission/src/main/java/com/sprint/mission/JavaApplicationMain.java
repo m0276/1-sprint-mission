@@ -1,18 +1,18 @@
-package com.sprint.mission;
-
-import com.sprint.mission.discodeit.entity.Channel;
-import com.sprint.mission.discodeit.entity.User;
-import com.sprint.mission.discodeit.service.basic.*;
-import com.sprint.mission.discodeit.service.file.FileService;
-import com.sprint.mission.discodeit.service.jcf.JCFServiceJCF;
-
-import java.io.IOException;
-import java.io.Serializable;
-
-public class JavaApplicationMain {
-    static JCFServiceJCF jcfService = JCFServiceJCF.getInstance();
-    static FileService fileService = FileService.getInstance();
-    public static void main(String[] args) throws IOException, ClassNotFoundException {
+//package com.sprint.mission;
+//
+//import com.sprint.mission.discodeit.entity.Channel;
+//import com.sprint.mission.discodeit.entity.User;
+//import com.sprint.mission.discodeit.service.basic.*;
+//import com.sprint.mission.discodeit.service.file.FileService;
+//import com.sprint.mission.discodeit.service.jcf.JCFServiceJCF;
+//
+//import java.io.IOException;
+//import java.io.Serializable;
+//
+//public class JavaApplicationMain {
+//    static JCFServiceJCF jcfService = JCFServiceJCF.getInstance();
+//    static FileService fileService = FileService.getInstance();
+//    public static void main(String[] args) throws IOException, ClassNotFoundException {
 //        User user1 = fileService.saveUser("Name1");
 //        fileService.showInfoUser(user1);
 //
@@ -46,26 +46,26 @@ public class JavaApplicationMain {
 //        fileService.showInfoMessage(message1);
 //
 //        fileService.deleteChannel(channel1);
-
-        UserService userService = BasicUserService.getInstance();
-        ChannelService channelService = BasicChannelService.getInstance();
-        MessageService messageService = BasicMessageService.getInstance();
-
-        // 셋업
-        User user = setupUser(userService);
-        Channel channel = setupChannel(channelService);
-        // 테스트
-        messageCreateTest(messageService, channel, user);
-
-    }
-
-    private static User setupUser (UserService userService) throws IOException, ClassNotFoundException {
-        return userService.saveUser();
-    }
-    private static Channel setupChannel (ChannelService channelService) throws IOException, ClassNotFoundException {
-        return channelService.saveChannel();
-    }
-    private static void messageCreateTest (MessageService messageService,Channel channel, User user) throws IOException, ClassNotFoundException {
-        messageService.saveMessage("no content",user,channel);
-    }
-}
+//
+//        UserService userService = BasicUserService.getInstance();
+//        ChannelService channelService = BasicChannelService.getInstance();
+//        MessageService messageService = BasicMessageService.getInstance();
+//
+//        // 셋업
+//        User user = setupUser(userService);
+//        Channel channel = setupChannel(channelService);
+//        // 테스트
+//        messageCreateTest(messageService, channel, user);
+//
+//    }
+//
+//    private static User setupUser (UserService userService) throws IOException, ClassNotFoundException {
+//        return userService.saveUser();
+//    }
+//    private static Channel setupChannel (ChannelService channelService) throws IOException, ClassNotFoundException {
+//        return channelService.saveChannel();
+//    }
+//    private static void messageCreateTest (MessageService messageService,Channel channel, User user) throws IOException, ClassNotFoundException {
+//        messageService.saveMessage("no content",user,channel);
+//    }
+//}

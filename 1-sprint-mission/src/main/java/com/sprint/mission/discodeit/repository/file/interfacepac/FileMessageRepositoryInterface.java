@@ -1,9 +1,8 @@
-package com.sprint.mission.discodeit.repository.file;
+package com.sprint.mission.discodeit.repository.file.interfacepac;
 
 import com.sprint.mission.discodeit.entity.Message;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
