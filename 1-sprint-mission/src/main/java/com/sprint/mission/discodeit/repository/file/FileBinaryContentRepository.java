@@ -1,7 +1,9 @@
 package com.sprint.mission.discodeit.repository.file;
 
+import com.sprint.mission.discodeit.dto.MessageDto;
+import com.sprint.mission.discodeit.dto.UserDto;
 import com.sprint.mission.discodeit.entity.BinaryContent;
-import com.sprint.mission.discodeit.repository.file.interfacepac.FileBinaryContentRepositoryInterface;
+import org.springframework.stereotype.Repository;
 
 import java.io.*;
 import java.time.Instant;
@@ -9,22 +11,25 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class FileBinaryContentRepository{
-    public void saveUserContent(UUID id, Instant createdAt) throws IOException, ClassNotFoundException {
+@Repository
+public class FileBinaryContentRepository {
+
+    public void saveUserContent(UserDto userDto) throws IOException, ClassNotFoundException {
         BinaryContent binaryContent = new BinaryContent();
-        binaryContent.setUserId(id);
+        binaryContent.setUserId(userDto.getId());
         binaryContent.setCreatedAt(Instant.now());
         binaryContent.setMessageId(null);
+        binaryContent.setContentUrl(userDto.getContentUrl());
 
         saveContent(binaryContent);
     }
 
-    public void saveMessageContent(UUID messageId) throws IOException, ClassNotFoundException {
+    public void saveMessageContent(MessageDto messageDto) throws IOException, ClassNotFoundException {
         BinaryContent binaryContent = new BinaryContent();
-        binaryContent.setMessageId(messageId);
+        binaryContent.setMessageId(messageDto.getMessageId());
         binaryContent.setCreatedAt(Instant.now());
         binaryContent.setUserId(null);
-
+        binaryContent.setContentUrls(messageDto.getContentUrl());
 
         saveContent(binaryContent);
     }
@@ -32,19 +37,39 @@ public class FileBinaryContentRepository{
     public void deleteUser(UUID id) throws IOException, ClassNotFoundException {
         List<BinaryContent> contents = getContentListFromFile();
 
-        contents.removeIf(content -> content.getUserId().equals(id));
-        modifyContentOfFile(contents);
+        for(BinaryContent content : contents){
+            if(content.getUserId() != null){
+                if(content.getUserId().equals(id)){
+                    contents.remove(content);
+                    modifyContentOfFile(contents);
+                    return;
+                }
+            }
+        }
     }
 
     public void deleteMessage(UUID id) throws IOException, ClassNotFoundException {
         List<BinaryContent> contents = getContentListFromFile();
-        contents.removeIf(content -> content.getMessageId().equals(id));
+
+        for(BinaryContent content : contents){
+            if(content.getMessageId() == null){
+                continue;
+            }
+
+            if(content.getMessageId().equals(id)){
+                contents.remove(content);
+            }
+        }
         modifyContentOfFile(contents);
     }
 
     public BinaryContent findMessageContent(UUID messageId) throws IOException, ClassNotFoundException {
         List<BinaryContent> contents = getContentListFromFile();
         for(BinaryContent content : contents){
+            if(content.getMessageId() == null){
+                continue;
+            }
+
             if(content.getMessageId().equals(messageId)){
                 return content;
             }
@@ -57,6 +82,10 @@ public class FileBinaryContentRepository{
     public BinaryContent findUserContent(UUID userId) throws IOException, ClassNotFoundException {
         List<BinaryContent> contents = getContentListFromFile();
         for(BinaryContent content : contents){
+            if(content.getUserId() == null){
+                continue;
+            }
+
             if(content.getUserId().equals(userId)){
                 return content;
             }

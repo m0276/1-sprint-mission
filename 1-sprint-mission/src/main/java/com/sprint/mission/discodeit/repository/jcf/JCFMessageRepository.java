@@ -2,14 +2,13 @@ package com.sprint.mission.discodeit.repository.jcf;
 
 import com.sprint.mission.discodeit.dto.MessageDto;
 import com.sprint.mission.discodeit.entity.Message;
-import org.springframework.stereotype.Repository;
 
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@Repository
+
 public class JCFMessageRepository {
 //    private static final JCFMessageRepository INSTANCE = new JCFMessageRepository();
 //    private JCFMessageRepository(){}
@@ -36,10 +35,10 @@ public class JCFMessageRepository {
         message.setUserName(messageDto.getUserName());
         message.setChannelId(messageDto.getChannelId());
         message.setChannelName(messageDto.getChannelName());
-        message.setContents(messageDto.getHowManyContent());
+        message.setIsContainContent(messageDto.getHaveContent());
 
         messages.add(message);
-        if(messageDto.isHaveContent()) contentRepository.saveMessageContent(message.getMessageId());
+        if(messageDto.getHaveContent()) contentRepository.saveMessageContent(message.getMessageId());
         return message;
     }
 

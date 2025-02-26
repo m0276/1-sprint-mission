@@ -2,7 +2,7 @@ package com.sprint.mission.discodeit.repository.file;
 
 import com.sprint.mission.discodeit.dto.UserDto;
 import com.sprint.mission.discodeit.entity.User;
-import com.sprint.mission.discodeit.repository.file.interfacepac.FileUserRepositoryInterface;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.io.*;
@@ -13,28 +13,33 @@ import java.util.UUID;
 
 @Repository
 public class FileUserRepository {
-//    private static final FileUserRepository INSTANCE = new FileUserRepository();
-//    private FileUserRepository() {}
-//
-//    public static FileUserRepository getInstance() {
-//        return INSTANCE;
-//    }
-    private FileUserStatusRepository fileUserStatusRepository;
-    private FileBinaryContentRepository binaryContentRepository;
-    private FileUserStatusRepository statusRepository;
-    public User createUser(UserDto userDto) throws IOException, ClassNotFoundException {
+
+    private final FileBinaryContentRepository binaryContentRepository;
+    private final FileUserStatusRepository statusRepository;
+
+    @Autowired
+    public FileUserRepository(FileBinaryContentRepository binaryContentRepository, FileUserStatusRepository statusRepository) {
+        this.binaryContentRepository = binaryContentRepository;
+        this.statusRepository = statusRepository;
+    }
+
+    public void createUser(UserDto userDto) throws IOException, ClassNotFoundException {
         User user = new User();
         List<User> users = getUserListFromFile();
+
         for(User u : users){
             if(u.getName().equals(user.getName())){
-                return null;
+                throw new IOException();
             }
         }
         user.setName(userDto.getUserName());
         user.setPassword(userDto.getPassword());
         String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
-        if(!userDto.getEmail().matches(emailRegex)) return null;
+
+        if(!userDto.getEmail().matches(emailRegex)) throw new IOException();
+
         user.setEmail(userDto.getEmail());
+
         for(User u : users){
             if(u.getId().equals(user.getId())){
                 while(!u.getId().equals(user.getId())){
@@ -43,14 +48,12 @@ public class FileUserRepository {
             }
         }
 
+        user.setIsContainContent(userDto.getContainContent());
+
         saveUser(user);
-        if(userDto.isContainContent()){
-            binaryContentRepository.saveUserContent(user.getId(), Instant.now());
-        }
-        return user;
     }
 
-    public boolean modifyUser(UUID id, String newNickname) throws IOException, ClassNotFoundException {
+    public boolean update(UUID id, String newNickname) throws IOException, ClassNotFoundException {
         List<User> users = getUserListFromFile();
         for(User userName : users){
             if(userName.getName().equals(newNickname)) return false;
@@ -93,9 +96,9 @@ public class FileUserRepository {
 
     public User find(UserDto userDto) throws IOException, ClassNotFoundException {
         List<User> users = getUserListFromFile();
+
         for(User user : users){
             if(user.getName().equals(userDto.getUserName()) && user.getPassword().equals(userDto.getPassword())){
-                System.out.println(user + "status : " + statusRepository.find(userDto));
                 return user;
             }
         }
@@ -104,7 +107,13 @@ public class FileUserRepository {
     }
 
     public void findAll() throws IOException, ClassNotFoundException {
-        List<User> users = getUserListFromFile();
+        List<User> users;
+
+        if(getUserListFromFile() == null){
+            users = new ArrayList<>();
+        }
+        else users = getUserListFromFile();
+
         for(User user : users){
             UserDto userDto = new UserDto();
             userDto.setId(user.getId());

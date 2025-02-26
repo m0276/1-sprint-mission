@@ -1,4 +1,4 @@
-package com.sprint.mission.discodeit.repository.file.interfacepac;
+package com.sprint.mission.discodeit.repository.interfaces;
 
 import java.io.IOException;
 import java.time.Instant;

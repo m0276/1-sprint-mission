@@ -1,15 +1,13 @@
 package com.sprint.mission.discodeit.repository.jcf;
 
 import com.sprint.mission.discodeit.entity.ReadStatus;
-import org.springframework.stereotype.Repository;
 
-import java.io.*;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@Repository
+
 public class JCFReadStatusRepository {
     private List<ReadStatus> statuses = new ArrayList<>();
 
@@ -25,7 +23,7 @@ public class JCFReadStatusRepository {
     public void addUser(UUID channelId, UUID userId) {
         for(ReadStatus readStatus : statuses){
             if(readStatus.getChannelId().equals(channelId)){
-                readStatus.getCheck().put(userId,true);
+                readStatus.getCheckUserReadStatus().put(userId,true);
             }
         }
     }
@@ -36,13 +34,13 @@ public class JCFReadStatusRepository {
 
     public void deleteUser(UUID id) {
         for(ReadStatus readStatus : statuses){
-            readStatus.getCheck().remove(id);
+            readStatus.getCheckUserReadStatus().remove(id);
         }
     }
 
     public boolean checkUser(UUID channelId ,UUID id) {
         for(ReadStatus readStatus : statuses){
-            if(readStatus.getChannelId().equals(channelId) && readStatus.getCheck().containsKey(id)) return true;
+            if(readStatus.getChannelId().equals(channelId) && readStatus.getCheckUserReadStatus().containsKey(id)) return true;
         }
 
         return false;
@@ -51,7 +49,7 @@ public class JCFReadStatusRepository {
     public void findChannel(UUID channelId) {
         for(ReadStatus readStatus : statuses){
             if(readStatus.getChannelId().equals(channelId)){
-                System.out.println(readStatus.getCheck().keySet());
+                System.out.println(readStatus.getCheckUserReadStatus().keySet());
             }
         }
     }
@@ -69,7 +67,7 @@ public class JCFReadStatusRepository {
         List<UUID> list = new ArrayList<>();
 
         for(ReadStatus readStatus : statuses){
-            if(readStatus.getCheck().containsKey(userId)) list.add(readStatus.getChannelId());
+            if(readStatus.getCheckUserReadStatus().containsKey(userId)) list.add(readStatus.getChannelId());
         }
 
         return list;
