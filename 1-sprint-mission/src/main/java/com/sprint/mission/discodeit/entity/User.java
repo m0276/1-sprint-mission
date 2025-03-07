@@ -1,39 +1,76 @@
 package com.sprint.mission.discodeit.entity;
 
+import com.sprint.mission.discodeit.entity.base.BaseUpdatableEntity;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.Getter;
-import lombok.Setter;
 
-import java.io.Serial;
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.UUID;
 
-
+@Entity
+@Table(name = "users")
 @Getter
-@Setter
-public class User implements Serializable {
+public class User extends BaseUpdatableEntity {
 
-    @Serial
-    private static final long serialVersionUID = -4674437962852345619L;
-    private UUID id = UUID.randomUUID();
-    private String name;
-    private final Instant createdAt = Instant.now();
-    private Instant updatedAt = Instant.now();
-    private String password;
-    private String email;
-    private Boolean isContainContent;
+//  @Transient
+//  private static final long serialVersionUID = 1L;
+//
+//  @Id
+//  private UUID id;
+//
+//  @Column(name = "created_at")
+//  private Instant createdAt;
+//
+//  @Column(name = "updated_at")
+//  private Instant updatedAt;
 
-    SimpleDateFormat format = new SimpleDateFormat("yyyy년 MM월 dd일 hh:mm:ss");
+  @Column
+  private String username;
 
-    @Override
-    public String toString() {
-        return "User\n" +
-                "id = " + id + '\n' +
-                "name = " + name + '\n' +
-                "email = " + email + '\n' +
-                "createdAt = " + (createdAt) + '\n' +
-                "updatedAt = " + (updatedAt)+ '\n';
+  @Column
+  private String email;
+
+  @Column
+  private String password;
+
+  @OneToOne
+  @Column(name = "profile_id")
+  private UUID profileId;     // BinaryContent
+
+  public User(String username, String email, String password, UUID profileId) {
+    this.username = username;
+    this.email = email;
+    this.password = password;
+    this.profileId = profileId;
+  }
+
+  public void update(String newUsername, String newEmail, String newPassword, UUID newProfileId) {
+    boolean anyValueUpdated = false;
+    if (newUsername != null && !newUsername.equals(this.username)) {
+      this.username = newUsername;
+      anyValueUpdated = true;
+    }
+    if (newEmail != null && !newEmail.equals(this.email)) {
+      this.email = newEmail;
+      anyValueUpdated = true;
+    }
+    if (newPassword != null && !newPassword.equals(this.password)) {
+      this.password = newPassword;
+      anyValueUpdated = true;
+    }
+    if (newProfileId != null && !newProfileId.equals(this.profileId)) {
+      this.profileId = newProfileId;
+      anyValueUpdated = true;
     }
 
+    if (anyValueUpdated) {
+      setUpdatedAt(Instant.now());
+    }
+  }
 }

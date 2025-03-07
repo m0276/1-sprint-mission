@@ -1,35 +1,46 @@
 package com.sprint.mission.discodeit.controller;
 
-import com.sprint.mission.discodeit.dto.UserDto;
-import com.sprint.mission.discodeit.service.basic.BasicUserStatusService;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import com.sprint.mission.discodeit.dto.request.ReadStatusCreateRequest;
+import com.sprint.mission.discodeit.dto.request.ReadStatusUpdateRequest;
+import com.sprint.mission.discodeit.entity.ReadStatus;
+import com.sprint.mission.discodeit.service.ReadStatusService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
+import java.util.List;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/user/status")
-@Tag(name = "UserStatusController", description = "UserStatusController API 목록")
+@RequestMapping("/api/readStatuses")
 public class UserStatusController {
 
-  private final BasicUserStatusService basicUserStatusService;
+  private final ReadStatusService readStatusService;
 
-  @PutMapping
-  public ResponseEntity<Void> login(@RequestBody UserDto userDto) {
-    try {
-      basicUserStatusService.updateByUserId(userDto);
-    } catch (IOException | ClassNotFoundException e) {
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-    }
+  @PostMapping
+  public ResponseEntity<ReadStatus> create(@RequestBody ReadStatusCreateRequest request) {
+    ReadStatus createdReadStatus = readStatusService.create(request);
+    return ResponseEntity
+        .status(HttpStatus.CREATED)
+        .body(createdReadStatus);
+  }
 
-    return ResponseEntity.status(HttpStatus.OK).build();
+  @PatchMapping(path = "{readStatusId}")
+  public ResponseEntity<ReadStatus> update(@PathVariable("readStatusId") UUID readStatusId,
+      @RequestBody ReadStatusUpdateRequest request) {
+    ReadStatus updatedReadStatus = readStatusService.update(readStatusId, request);
+    return ResponseEntity
+        .status(HttpStatus.OK)
+        .body(updatedReadStatus);
+  }
+
+  @GetMapping
+  public ResponseEntity<List<ReadStatus>> findAllByUserId(@RequestParam("userId") UUID userId) {
+    List<ReadStatus> readStatuses = readStatusService.findAllByUserId(userId);
+    return ResponseEntity
+        .status(HttpStatus.OK)
+        .body(readStatuses);
   }
 }
