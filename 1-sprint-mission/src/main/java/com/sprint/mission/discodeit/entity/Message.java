@@ -1,9 +1,12 @@
 package com.sprint.mission.discodeit.entity;
 
 import com.sprint.mission.discodeit.entity.base.BaseUpdatableEntity;
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -20,30 +23,18 @@ import java.util.UUID;
 @Getter
 public class Message extends BaseUpdatableEntity {
 
-//  @Transient
-//  private static final long serialVersionUID = 1L;
-//
-//  @Id
-//  private UUID id;
-//
-//  @Column
-//  private Instant createdAt;
-//
-//  @Column
-//  private Instant updatedAt;
-
   @Column
   private String content;
 
   @Column(name = "channel_id")
-  @ManyToOne
   private UUID channelId;
 
   @Column(name = "author_id")
-  @ManyToOne
   private UUID authorId;
 
-  @Transient
+  @ElementCollection
+  @CollectionTable(name = "message_attachments", joinColumns = @JoinColumn(name = "message_id"))
+  @Column(name = "attachment_id")
   private List<UUID> attachmentIds;
 
   public Message(String content, UUID channelId, UUID authorId, List<UUID> attachmentIds) {
@@ -51,6 +42,10 @@ public class Message extends BaseUpdatableEntity {
     this.channelId = channelId;
     this.authorId = authorId;
     this.attachmentIds = attachmentIds;
+  }
+
+  public Message() {
+
   }
 
   public void update(String newContent) {
@@ -63,5 +58,9 @@ public class Message extends BaseUpdatableEntity {
     if (anyValueUpdated) {
       setUpdatedAt(Instant.now());
     }
+  }
+
+  public List<UUID> getAttachmentIds() {
+    return attachmentIds;
   }
 }

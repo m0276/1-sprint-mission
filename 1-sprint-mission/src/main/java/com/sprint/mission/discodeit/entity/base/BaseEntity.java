@@ -1,20 +1,24 @@
 package com.sprint.mission.discodeit.entity.base;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Id;
+import jakarta.persistence.MappedSuperclass;
 import java.time.Instant;
 import java.util.UUID;
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.Id;
 
+
+@MappedSuperclass
 @Getter
 public abstract class BaseEntity {
 
   @Id
-  UUID id = UUID.randomUUID();
+  @Column(name = "id")
+  public UUID id;
 
   @Column(name = "created_at")
   @CreatedDate
-  Instant createdAt;
+  public Instant createdAt;
 
 }

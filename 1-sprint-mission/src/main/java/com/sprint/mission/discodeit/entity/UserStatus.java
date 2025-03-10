@@ -2,7 +2,9 @@ package com.sprint.mission.discodeit.entity;
 
 import com.sprint.mission.discodeit.entity.base.BaseUpdatableEntity;
 import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import lombok.Getter;
 
 import java.io.Serializable;
@@ -10,6 +12,8 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.UUID;
 
+@Entity
+@Table(name = "user_statuses")
 @Getter
 public class UserStatus extends BaseUpdatableEntity {
 
@@ -19,7 +23,6 @@ public class UserStatus extends BaseUpdatableEntity {
 //  private Instant updatedAt;
 //  //
 
-  @OneToOne
   @Column(name = "user_id")
   private UUID userId;
 
@@ -29,6 +32,10 @@ public class UserStatus extends BaseUpdatableEntity {
   public UserStatus(UUID userId, Instant lastActiveAt) {
     this.userId = userId;
     this.lastActiveAt = lastActiveAt;
+  }
+
+  public UserStatus() {
+
   }
 
   public void update(Instant lastActiveAt) {

@@ -6,14 +6,15 @@ import java.util.UUID;
 import com.sprint.mission.discodeit.dto.UserDto;
 import lombok.Getter;
 
-@Getter
-public class MessageDto {
+public record MessageDto(
 
-  UUID id;
-  Instant createdAt;
-  Instant updatedAt;
-  String content;
-  UUID channelId;
-  UserDto author;
-  List<BinaryContentDto> attachments;
+    UUID id,
+    Instant createdAt,
+    Instant updatedAt,
+    String content,
+    UUID channelId,
+    UserDto author,
+    List<BinaryContentDto> attachments
+) {
+
 }

@@ -21,7 +21,6 @@ public class BasicBinaryContentService implements BinaryContentService {
 
   private final BinaryContentRepository binaryContentRepository;
   private final BinaryContentStorage binaryContentStorage;
-  private final BinaryContentMapper mapper;
 
   @Override
   public BinaryContent create(BinaryContentCreateRequest request) {
@@ -32,7 +31,6 @@ public class BasicBinaryContentService implements BinaryContentService {
         (long) request.bytes().length,
         contentType
     );
-    binaryContent.setBytes(request.bytes());
     binaryContentStorage.put(binaryContent.getId(), request.bytes());
     return binaryContentRepository.save(binaryContent);
   }

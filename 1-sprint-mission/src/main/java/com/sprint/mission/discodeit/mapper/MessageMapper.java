@@ -11,28 +11,14 @@ import lombok.RequiredArgsConstructor;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
+import org.springframework.stereotype.Component;
 
-@RequiredArgsConstructor
-@Mapper(componentModel = "spring", uses = {UserMapper.class, BinaryContentMapper.class})
-public abstract class MessageMapper {
 
-  BinaryContentMapper binaryContentMapper;
-  BinaryContentRepository binaryContentRepository;
+@Mapper(componentModel = "spring", uses = {UserMapper.class, MessageMapperHelper.class})
+@Named("MessageMapper")
+public interface MessageMapper {
 
   @Mapping(source = "attachmentIds", target = "attachments", qualifiedByName = "mapBinaryContents")
-  abstract MessageDto toDto(Message message);
-
-  @Named("mapBinaryContents")
-  List<BinaryContentDto> mapBinaryContents(List<UUID> attachmentIds) {
-    List<BinaryContentDto> list = new ArrayList<>();
-
-    for (UUID id : attachmentIds) {
-      list.add(binaryContentRepository.findById(id)
-          .map(binaryContentMapper::toDto)
-          .orElse(null));
-    }
-
-    return list;
-  }
+  MessageDto toDto(Message message);
 
 }

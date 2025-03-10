@@ -4,6 +4,7 @@ import com.sprint.mission.discodeit.entity.base.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 import lombok.Getter;
@@ -16,12 +17,6 @@ import java.util.UUID;
 @Table(name = "binary_contents")
 @Getter
 public class BinaryContent extends BaseEntity {
-
-//  @Id
-//  private UUID id;
-//
-//  @Column
-//  private Instant createdAt;
 
   @Column(name = "file_name")
   private String fileName;
@@ -38,4 +33,7 @@ public class BinaryContent extends BaseEntity {
     this.contentType = contentType;
   }
 
+  public BinaryContent() {
+
+  }
 }

@@ -17,15 +17,6 @@ import java.util.UUID;
 @Getter
 public class Channel extends BaseUpdatableEntity {
 
-//  @Id
-//  private UUID id;
-//
-//  @Column
-//  private Instant createdAt;
-//
-//  @Column
-//  private Instant updatedAt;
-
   @Column
   private ChannelType type;
 
@@ -40,6 +31,10 @@ public class Channel extends BaseUpdatableEntity {
     this.type = type;
     this.name = name;
     this.description = description;
+  }
+
+  public Channel() {
+
   }
 
   public void update(String newName, String newDescription) {
