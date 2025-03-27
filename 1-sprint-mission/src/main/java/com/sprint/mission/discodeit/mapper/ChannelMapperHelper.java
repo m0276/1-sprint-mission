@@ -37,35 +37,21 @@ public class ChannelMapperHelper {
     this.userMapper = userMapper;
   }
 
-  @Named("mapUserById")
-  public List<UserDto> mapProfileById(List<UUID> profileIds) {
+  protected Instant resolveLastMessageAt(Channel channel) {
+    return messageRepository.findLastMessageAtByChannelId(
+            channel.getId())
+        .orElse(Instant.MIN);
+  }
+
+  protected List<UserDto> resolveParticipants(Channel channel) {
     List<UserDto> participants = new ArrayList<>();
-    for (UUID id : profileIds) {
-      participants.add(userRepository.findById(id)
+    if (channel.getType().equals(ChannelType.PRIVATE)) {
+      readStatusRepository.findAllByChannelIdWithUser(channel.getId())
+          .stream()
+          .map(ReadStatus::getUser)
           .map(userMapper::toDto)
-          .orElse(null)
-      );
+          .forEach(participants::add);
     }
     return participants;
   }
-
-//  public ChannelDto channelToDto(Channel channel) {
-//    Instant lastMessageAt = messageRepository.findAllByChannelId(channel.getId())
-//        .stream()
-//        .sorted(Comparator.comparing(Message::getCreatedAt).reversed())
-//        .map(Message::getCreatedAt)
-//        .limit(1)
-//        .findFirst()
-//        .orElse(Instant.MIN);
-//
-//    List<UUID> participantIds = new ArrayList<>();
-//    if (channel.getType().equals(ChannelType.PRIVATE)) {
-//      readStatusRepository.findAllByChannelId(channel.getId())
-//          .stream()
-//          .map(ReadStatus::getUserId)
-//          .forEach(participantIds::add);
-//    }
-//
-//    return channelMapper.toDto(channel, participantIds, lastMessageAt);
-//  }
 }
