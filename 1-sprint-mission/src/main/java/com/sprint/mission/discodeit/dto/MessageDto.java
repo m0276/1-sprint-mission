@@ -1,11 +1,13 @@
 package com.sprint.mission.discodeit.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 import com.sprint.mission.discodeit.dto.UserDto;
 import lombok.Getter;
 
+@NotBlank
 public record MessageDto(
 
     UUID id,

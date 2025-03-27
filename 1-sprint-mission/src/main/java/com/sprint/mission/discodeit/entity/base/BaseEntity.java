@@ -17,8 +17,9 @@ public abstract class BaseEntity {
   @Column(name = "id")
   public UUID id;
 
-  @Column(name = "created_at")
+  @Column(name = "created_at", columnDefinition = "timestamp(6) with time zone")
   @CreatedDate
   public Instant createdAt;
+
 
 }

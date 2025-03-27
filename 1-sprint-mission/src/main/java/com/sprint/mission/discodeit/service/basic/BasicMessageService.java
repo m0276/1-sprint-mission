@@ -23,11 +23,13 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class BasicMessageService implements MessageService {
@@ -79,6 +81,8 @@ public class BasicMessageService implements MessageService {
     );
 
     messageRepository.save(message);
+
+    log.debug("create message");
     return messageMapper.toDto(message);
   }
 
@@ -117,6 +121,7 @@ public class BasicMessageService implements MessageService {
         .orElseThrow(
             () -> new NoSuchElementException("Message with id " + messageId + " not found"));
     message.update(newContent);
+    log.debug("update message");
     return messageMapper.toDto(message);
   }
 
@@ -127,6 +132,7 @@ public class BasicMessageService implements MessageService {
       throw new NoSuchElementException("Message with id " + messageId + " not found");
     }
 
+    log.debug("delete message");
     messageRepository.deleteById(messageId);
   }
 }

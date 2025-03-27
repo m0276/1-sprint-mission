@@ -20,13 +20,26 @@ import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+@Mapper(componentModel = "spring", uses = {BinaryContentMapper.class, UserStatusMapper.class})
+public abstract class UserMapper {
 
-@Mapper(componentModel = "spring", uses = {BinaryContentMapper.class, UserMapperHelper.class})
-@Named("UserMapper")
-public interface UserMapper {
+  private BinaryContentMapper binaryContentMapper;
 
-  @Mapping(source = "id", target = "online", qualifiedByName = "mapOnline")
-  @Mapping(source = "profileId", target = "profile", qualifiedByName = "mapProfileById")
-  UserDto toDto(User user);
+  @Autowired
+  public UserMapper(BinaryContentMapper binaryContentMapper) {
+    this.binaryContentMapper = binaryContentMapper;
+  }
+
+  public UserMapper() {
+  }
+
+  @Mapping(target = "profile", expression = "java(mapping(user.getProfile()))")
+  @Mapping(target = "online", expression = "java(user.getStatus().isOnline())")
+  abstract public UserDto toDto(User user);
+
+  protected BinaryContentDto mapping(BinaryContent profile) {
+    return binaryContentMapper.toDto(profile);
+  }
 }
+
 
