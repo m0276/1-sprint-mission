@@ -4,7 +4,7 @@ import com.sprint.mission.discodeit.exception.ErrorCode;
 
 public class MessageNotFoundException extends MessageException {
 
-  public MessageNotFoundException(Long messageId) {
+  public MessageNotFoundException() {
     super(ErrorCode.MESSAGE_NOT_FOUND);
   }
 }
