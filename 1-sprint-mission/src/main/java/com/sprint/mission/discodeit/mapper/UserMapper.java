@@ -9,6 +9,7 @@ import com.sprint.mission.discodeit.repository.BinaryContentRepository;
 import com.sprint.mission.discodeit.repository.UserStatusRepository;
 import jakarta.persistence.Column;
 import jakarta.persistence.OneToOne;
+import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.mapstruct.AfterMapping;
@@ -33,6 +34,9 @@ public abstract class UserMapper {
   public UserMapper() {
   }
 
+  @Mapping(source = "username", target = "username")
+  @Mapping(source = "email", target = "email")
+  @Mapping(source = "id", target = "id")
   @Mapping(target = "profile", expression = "java(mapping(user.getProfile()))")
   @Mapping(target = "online", expression = "java(user.getStatus().isOnline())")
   abstract public UserDto toDto(User user);

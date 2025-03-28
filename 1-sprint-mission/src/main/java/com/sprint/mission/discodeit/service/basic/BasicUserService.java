@@ -23,12 +23,14 @@ import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
 @Slf4j
+@Transactional
 public class BasicUserService implements UserService {
 
   private final UserRepository userRepository;
@@ -36,6 +38,7 @@ public class BasicUserService implements UserService {
   private final UserMapper userMapper;
   private final BinaryContentRepository binaryContentRepository;
   private final BinaryContentStorage binaryContentStorage;
+  private final EntityManagerFactoryBuilder entityManagerFactoryBuilder;
 
   @Transactional
   @Override
@@ -66,11 +69,12 @@ public class BasicUserService implements UserService {
     String password = userCreateRequest.password();
 
     User user = new User(username, email, password, nullableProfile);
-    Instant now = Instant.now();
-    UserStatus userStatus = new UserStatus(user, now);
 
+    UserStatus userStatus = new UserStatus(user, Instant.now());
+    userStatusRepository.save(userStatus);
     userRepository.save(user);
     log.debug("create user");
+
     return userMapper.toDto(user);
   }
 
@@ -94,15 +98,15 @@ public class BasicUserService implements UserService {
   public UserDto update(UUID userId, UserUpdateRequest userUpdateRequest,
       Optional<BinaryContentCreateRequest> optionalProfileCreateRequest) {
     User user = userRepository.findById(userId)
-        .orElseThrow(() -> new NoSuchElementException("User with id " + userId + " not found"));
+        .orElseThrow(UserNotFoundException::new);
 
     String newUsername = userUpdateRequest.newUsername();
     String newEmail = userUpdateRequest.newEmail();
     if (userRepository.existsByEmail(newEmail)) {
-      throw new IllegalArgumentException("User with email " + newEmail + " already exists");
+      throw new UserEmailAlreadyExistsException();
     }
     if (userRepository.existsByUsername(newUsername)) {
-      throw new IllegalArgumentException("User with username " + newUsername + " already exists");
+      throw new UserAlreadyExistsException();
     }
 
     BinaryContent nullableProfile = optionalProfileCreateRequest
@@ -129,7 +133,7 @@ public class BasicUserService implements UserService {
   @Override
   public void delete(UUID userId) {
     if (userRepository.existsById(userId)) {
-      throw new NoSuchElementException("User with id " + userId + " not found");
+      throw new UserNotFoundException();
     }
     log.debug("delete user");
     userRepository.deleteById(userId);

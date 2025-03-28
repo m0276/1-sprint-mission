@@ -2,6 +2,7 @@ package com.sprint.mission.discodeit.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.sprint.mission.discodeit.entity.base.BaseUpdatableEntity;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -21,7 +22,7 @@ import lombok.NoArgsConstructor;
 public class UserStatus extends BaseUpdatableEntity {
 
   @JsonBackReference
-  @OneToOne(fetch = FetchType.LAZY, optional = false)
+  @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
   @JoinColumn(name = "user_id", nullable = false, unique = true)
   private User user;
   @Column(columnDefinition = "timestamp with time zone", nullable = false)
