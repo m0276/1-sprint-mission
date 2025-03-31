@@ -41,6 +41,9 @@ dependencies {
     annotationProcessor group: 'org.mapstruct', name: 'mapstruct-processor', version: '1.5.2.Final'
     implementation group: 'org.mapstruct', name: 'mapstruct-processor', version: '1.5.2.Final'
 
+    testRuntimeOnly 'com.h2database:h2:2.1.214'
+    testImplementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    testImplementation 'com.h2database:h2'
 }
 
 tasks.named('test') {

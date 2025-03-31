@@ -30,7 +30,7 @@ public class ReadStatus extends BaseUpdatableEntity {
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "channel_id")
   private Channel channel;
-  @Column(columnDefinition = "timestamp with time zone", nullable = false)
+  @Column(columnDefinition = "timestamp with time zone", nullable = false, name = "last_read_at")
   private Instant lastReadAt;
 
   public ReadStatus(User user, Channel channel, Instant lastReadAt) {
