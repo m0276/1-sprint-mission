@@ -49,7 +49,7 @@ class BasicUserServiceTest {
   }
 
   @Test
-  void createUser_ShouldSucceed_WhenUserDoesNotExist() {
+  void createUserShouldSucceed() {
     // given
     UserCreateRequest request = new UserCreateRequest("testUser", "test@example.com", "password");
 
@@ -67,7 +67,7 @@ class BasicUserServiceTest {
   }
 
   @Test
-  void createUser_ShouldFail_WhenEmailAlreadyExists() {
+  void createUserShouldFail() {
     // given
     UserCreateRequest request = new UserCreateRequest("testUser", "test@example.com", "password");
 
@@ -82,7 +82,7 @@ class BasicUserServiceTest {
   }
 
   @Test
-  void updateUser_ShouldSucceed_WhenUserExists() {
+  void updateUserShouldSucceed() {
     // given
     UserUpdateRequest request = new UserUpdateRequest("newUser", "new@example.com", "newPassword");
 
@@ -98,7 +98,7 @@ class BasicUserServiceTest {
   }
 
   @Test
-  void deleteUser_ShouldSucceed_WhenUserExists() {
+  void deleteUserShouldSucceed() {
     // given
     willDoNothing().given(userRepository).deleteById(userId);
 
@@ -110,7 +110,7 @@ class BasicUserServiceTest {
   }
 
   @Test
-  void deleteUser_ShouldFail_WhenUserNotFound() {
+  void deleteUser() {
     // given
     given(userRepository.existsById(userId)).willReturn(false);
 

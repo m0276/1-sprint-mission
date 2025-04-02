@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 
 @Mapper(componentModel = "spring")
 @Named("BinaryContentMapper")
-@Component
 public interface BinaryContentMapper {
 
   BinaryContentDto toDto(BinaryContent binaryContent);

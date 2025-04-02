@@ -20,15 +20,8 @@ import org.springframework.stereotype.Component;
 @Mapper(componentModel = "spring", uses = {BinaryContentMapper.class, UserMapper.class})
 public abstract class MessageMapper {
 
-  BinaryContentMapper binaryContentMapper;
-
   @Autowired
-  public MessageMapper(BinaryContentMapper binaryContentMapper) {
-    this.binaryContentMapper = binaryContentMapper;
-  }
-
-  public MessageMapper() {
-  }
+  BinaryContentMapper binaryContentMapper;
 
   @Mapping(target = "channelId", expression = "java(message.getChannel().getId())")
   @Mapping(target = "attachments", expression = "java(binaryContentToDto(message))")

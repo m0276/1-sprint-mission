@@ -24,26 +24,19 @@ import org.springframework.stereotype.Component;
 @Mapper(componentModel = "spring", uses = {BinaryContentMapper.class, UserStatusMapper.class})
 public abstract class UserMapper {
 
-  private BinaryContentMapper binaryContentMapper;
-
-  @Autowired
-  public UserMapper(BinaryContentMapper binaryContentMapper) {
-    this.binaryContentMapper = binaryContentMapper;
-  }
-
-  public UserMapper() {
-  }
-
   @Mapping(source = "username", target = "username")
   @Mapping(source = "email", target = "email")
   @Mapping(source = "id", target = "id")
   @Mapping(target = "profile", expression = "java(mapping(user.getProfile()))")
   @Mapping(target = "online", expression = "java(user.getStatus().isOnline())")
-  abstract public UserDto toDto(User user);
+  public abstract UserDto toDto(User user);
 
   protected BinaryContentDto mapping(BinaryContent profile) {
-    return binaryContentMapper.toDto(profile);
+    return profile != null ? binaryContentMapper.toDto(profile) : null;
   }
+
+  @Autowired
+  private BinaryContentMapper binaryContentMapper;
 }
 
 
