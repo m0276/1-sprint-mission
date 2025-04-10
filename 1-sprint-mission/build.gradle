@@ -50,6 +50,7 @@ dependencies {
     testImplementation 'com.h2database:h2'
 
     implementation 'software.amazon.awssdk:s3:2.31.7'
+    implementation 'io.github.cdimascio:dotenv-java:2.2.4'
 }
 
 tasks.named('test') {
