@@ -4,6 +4,7 @@ import com.sprint.mission.discodeit.configure.Role;
 import com.sprint.mission.discodeit.dto.UserDto;
 import com.sprint.mission.discodeit.dto.request.BinaryContentCreateRequest;
 import com.sprint.mission.discodeit.dto.request.UserCreateRequest;
+import com.sprint.mission.discodeit.dto.request.UserRoleUpdateRequest;
 import com.sprint.mission.discodeit.dto.request.UserUpdateRequest;
 import com.sprint.mission.discodeit.entity.BinaryContent;
 import com.sprint.mission.discodeit.entity.User;
@@ -25,7 +26,10 @@ import java.util.Set;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
+import org.springframework.security.core.session.SessionInformation;
+import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.session.SessionRegistryImpl;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -141,5 +145,31 @@ public class BasicUserService implements UserService {
     }
     log.debug("delete user");
     userRepository.deleteById(userId);
+  }
+
+
+  public UserDto convertToUserDto(UserDetails userDetails) {
+    User user = userRepository.findByUsername(userDetails.getUsername())
+        .orElseThrow(NoSuchElementException::new);
+
+    return userMapper.toDto(user);
+  }
+
+  public UserDto updateRoles(UserRoleUpdateRequest request) {
+    User user = userRepository.findByUsername(request.username())
+        .orElseThrow(NoSuchElementException::new);
+
+    user.setRoles(Set.of(request.role()));
+    userRepository.save(user);
+
+    SessionRegistry sessionRegistry = new SessionRegistryImpl();
+
+    sessionRegistry.getAllPrincipals().stream()
+        .filter(p -> p instanceof UserDetails)
+        .filter(p -> ((UserDetails) p).getUsername().equals(request.username()))
+        .flatMap(p -> sessionRegistry.getAllSessions(p, false).stream())
+        .forEach(SessionInformation::expireNow);
+
+    return userMapper.toDto(user);
   }
 }

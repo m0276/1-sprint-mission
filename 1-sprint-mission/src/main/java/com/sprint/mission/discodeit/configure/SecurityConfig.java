@@ -12,6 +12,7 @@ import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -31,7 +32,32 @@ public class SecurityConfig {
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http,
-      CustomLoginFilter loginFilter) throws Exception {
+      CustomLoginFilter loginFilter,
+      JwtAuthenticationFilter jwtFilter) throws Exception {
+//    http
+//        .csrf(csrf -> csrf
+//            .ignoringRequestMatchers("/api/auth/logout")
+//            .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+//        )
+//        .authorizeHttpRequests(auth -> auth
+//            .requestMatchers("/api/auth/login", "/api/users", "/api/auth/csrf-token").permitAll()
+//            .requestMatchers(HttpMethod.PUT, "/api/auth/role").hasRole("ADMIN")
+//            .requestMatchers("/api/channels/**").hasAnyRole("CHANNEL_MANAGER", "ADMIN")
+//            .anyRequest().hasRole("USER")
+//        )
+//        .sessionManagement(session -> session
+//            .maximumSessions(1)
+//            .sessionRegistry(sessionRegistry()))
+//        .securityContext(securityContext ->
+//            securityContext.securityContextRepository(new HttpSessionSecurityContextRepository()))
+//        .addFilterAt(loginFilter, UsernamePasswordAuthenticationFilter.class)
+//        .logout(AbstractHttpConfigurer::disable);
+//
+//    return http.build();
+    CookieCsrfTokenRepository csrfTokenRepository = CookieCsrfTokenRepository.withHttpOnlyFalse();
+    csrfTokenRepository.setCookieName("XSRF-TOKEN");
+    csrfTokenRepository.setHeaderName("X-XSRF-TOKEN");
+
     http
         .csrf(csrf -> csrf
             .ignoringRequestMatchers("/api/auth/logout")
@@ -43,12 +69,11 @@ public class SecurityConfig {
             .requestMatchers("/api/channels/**").hasAnyRole("CHANNEL_MANAGER", "ADMIN")
             .anyRequest().hasRole("USER")
         )
-        .sessionManagement(session -> session
-            .maximumSessions(1)
-            .sessionRegistry(sessionRegistry()))
-        .securityContext(securityContext ->
-            securityContext.securityContextRepository(new HttpSessionSecurityContextRepository()))
+        .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
         .addFilterAt(loginFilter, UsernamePasswordAuthenticationFilter.class)
+        .sessionManagement(
+            session -> session.sessionCreationPolicy(
+                SessionCreationPolicy.STATELESS))
         .logout(AbstractHttpConfigurer::disable);
 
     return http.build();
