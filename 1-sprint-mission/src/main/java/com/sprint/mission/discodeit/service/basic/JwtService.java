@@ -12,7 +12,9 @@ import com.sprint.mission.discodeit.repository.JwtSessionRepository;
 import com.sprint.mission.discodeit.dto.UserDto;
 import jakarta.servlet.http.HttpServletResponse;
 import java.time.Duration;
+import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -59,30 +61,6 @@ public class JwtService {
         .refreshToken(refreshToken)
         .build();
     jwtSessionRepository.save(session);
-  }
-
-  public Optional<JwtSession> validateAccessToken(String token) {
-    try {
-      JWTVerifier verifier = JWT.require(Algorithm.HMAC256(secret)).build();
-      DecodedJWT jwt = verifier.verify(token);
-      return jwtSessionRepository.findByAccessToken(token);
-    } catch (JWTVerificationException e) {
-      return Optional.empty();
-    }
-  }
-
-  public Optional<String> refreshAccessToken(String refreshToken) {
-    Optional<JwtSession> sessionOpt = jwtSessionRepository.findByRefreshToken(refreshToken);
-    if (sessionOpt.isPresent()) {
-      JwtSession session = sessionOpt.get();
-      String newAccessToken = generateAccessToken(session.getUserDto());
-      String newRefreshToken = generateRefreshToken(session.getUserDto());
-      session.setAccessToken(newAccessToken);
-      session.setRefreshToken(newRefreshToken);
-      jwtSessionRepository.save(session);
-      return Optional.of(newAccessToken);
-    }
-    return Optional.empty();
   }
 
   public void invalidateRefreshToken(String refreshToken) {
@@ -133,15 +111,6 @@ public class JwtService {
     }
   }
 
-  public void saveOrUpdateJwtSession(UserDto userDto, String accessToken, String refreshToken) {
-    Optional<JwtSession> sessionOpt = findJwtSessionByRefreshToken(refreshToken);
-    JwtSession session = sessionOpt.orElse(new JwtSession());
-    session.setUserId(userDto.id());
-    session.setAccessToken(accessToken);
-    session.setRefreshToken(refreshToken);
-    jwtSessionRepository.save(session);
-  }
-
   public Optional<String> reissueAccessTokenWithRotation(String oldRefreshToken,
       HttpServletResponse response) {
     if (isRefreshTokenValid(oldRefreshToken)) {
@@ -186,5 +155,10 @@ public class JwtService {
     } catch (Exception e) {
       return null;
     }
+  }
+
+  public void invalidateSessionsByUserId(UUID id) {
+    List<JwtSession> sessions = jwtSessionRepository.findAllByUserId(id);
+    jwtSessionRepository.deleteAll(sessions);
   }
 }

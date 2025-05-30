@@ -110,6 +110,7 @@ public class AuthController {
   @PutMapping("/role")
   @PreAuthorize("hasRole('ADMIN')")
   public UserDto updateRole(@RequestBody UserRoleUpdateRequest request) {
+    jwtService.invalidateSessionsByUserId(userService.findByUserName(request.username()));
     return userService.updateRoles(request);
   }
 

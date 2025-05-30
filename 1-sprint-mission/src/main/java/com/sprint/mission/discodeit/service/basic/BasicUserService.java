@@ -172,4 +172,8 @@ public class BasicUserService implements UserService {
 
     return userMapper.toDto(user);
   }
+
+  public UUID findByUserName(String username) {
+    return userRepository.findByUsername(username).orElseThrow(NoSuchElementException::new).id;
+  }
 }
